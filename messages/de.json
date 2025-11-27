@@ -1,0 +1,31 @@
+{
+  "Index": {
+    "title": "TankSitter",
+    "subtitle": "Keine toten Fische mehr nach dem Urlaub.",
+    "description": "Erstelle in Sekunden einen idiotensicheren, visuellen Guide für deinen Nachbarn oder Sitter.",
+    "start_button": "Jetzt kostenlos starten",
+    "features": {
+      "photo": "Foto-basierte Aufgaben",
+      "link": "Einfacher Magic Link",
+      "mobile": "Funktioniert auf jedem Handy"
+    }
+  },
+  "Login": {
+    "title": "Anmelden",
+    "subtitle": "Dein Aquarium-Sitter Guide",
+    "email_placeholder": "E-Mail Adresse",
+    "button_send": "Magic Link senden",
+    "button_sending": "Sendet...",
+    "magic_link_hint": "Kein Passwort. Einfach auf den Link in deiner E-Mail klicken."
+  },
+  "Dashboard": {
+    "welcome": "Willkommen zurück, {email}!",
+    "your_tanks": "Deine Becken",
+    "no_tanks": "Noch keine Becken eingerichtet.",
+    "new_tank_button": "+ Neues Becken"
+  },
+  "Sitter": {
+  "emergency_button": "Notfall / Problem melden",
+  "todo_today_title": "Heute zu tun"
+}
+}
