@@ -8,6 +8,25 @@
       "photo": "Foto-basierte Aufgaben",
       "link": "Einfacher Magic Link",
       "mobile": "Funktioniert auf jedem Handy"
+    },
+    "trust_badges": {
+      "photo_title": "Foto-Tasks",
+      "photo_desc": "Statt langer Texte",
+      "qr_title": "QR Zugang",
+      "qr_desc": "Kein Login nötig",
+      "free_title": "100% Kostenlos",
+      "free_desc": "Für Hobbyisten"
+    },
+    "mockup": {
+      "view_title": "Sitter Ansicht",
+      "tank_name": "Nano Cube 30L",
+      "task_done_title": "Licht Check",
+      "task_done_time": "Erledigt um 09:15",
+      "task_active_title": "Füttern (Abends)",
+      "task_active_desc": "Nur einen halben Löffel! Wenn Wasser trüb, weglassen.",
+      "photo_label": "Foto",
+      "button_done": "Erledigt ✅",
+      "hint_finger": "Das sieht dein Sitter 👇"
     }
   },
   "Login": {
@@ -29,7 +48,7 @@
     "new_tank_button": "+ Neues Becken"
   },
   "Sitter": {
-  "emergency_button": "Notfall / Problem melden",
-  "todo_today_title": "Heute zu tun"
-}
+    "emergency_button": "Notfall / Problem melden",
+    "todo_today_title": "Heute zu tun"
+  }
 }

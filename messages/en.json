@@ -8,6 +8,25 @@
       "photo": "Photo-based tasks",
       "link": "Simple Magic Link",
       "mobile": "Works on any mobile"
+    },
+    "trust_badges": {
+      "photo_title": "Photo Tasks",
+      "photo_desc": "Instead of text walls",
+      "qr_title": "QR Access",
+      "qr_desc": "No login needed",
+      "free_title": "100% Free",
+      "free_desc": "For hobbyists"
+    },
+    "mockup": {
+      "view_title": "Sitter View",
+      "tank_name": "Nano Cube 10G",
+      "task_done_title": "Light Check",
+      "task_done_time": "Done at 09:15",
+      "task_active_title": "Feeding (Evening)",
+      "task_active_desc": "Just half a spoon! If water cloudy, skip.",
+      "photo_label": "Photo",
+      "button_done": "Done ✅",
+      "hint_finger": "Your sitter sees this 👇"
     }
   },
   "Login": {
