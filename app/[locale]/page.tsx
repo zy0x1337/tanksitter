@@ -138,6 +138,10 @@ export default function IndexPage() {
         <p className="text-slate-400 text-sm">
           Built with 💙 for the fish-keeping community.
         </p>
+        <div className="flex justify-center gap-6 text-xs text-slate-400">
+    <Link href="/legal/imprint" className="hover:text-slate-600">Imprint</Link>
+    <Link href="/legal/privacy" className="hover:text-slate-600">Privacy</Link>
+  </div>
       </footer>
     </div>
   )
