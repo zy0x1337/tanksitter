@@ -38,13 +38,13 @@ export default function LoginPage() {
     setLoading(false)
 
     if (error) {
-      alert('Error: ' + error.message) // Einfaches Error-Handling ist ok
+      alert('Error: ' + error.message)
     } else {
       setSuccess(true)
     }
   }
 
-  // Success-State (Jetzt übersetzt!)
+  // Success-State
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 p-4">
@@ -57,13 +57,14 @@ export default function LoginPage() {
             {t('success_title')}
           </h2>
           
-          <p className="text-slate-600 leading-relaxed">
-            {t.rich('success_message', {
-              email: email,
-              strong: (chunks) => <strong className="font-semibold text-slate-900">{chunks}</strong>,
-              br: () => <br />
-            })}
-          </p>
+          <div className="text-slate-600 leading-relaxed">
+            <p>
+              {t('success_msg_1')} <strong className="font-semibold text-slate-900">{email}</strong> {t('success_msg_2')}
+            </p>
+            <p className="mt-1">
+              {t('success_msg_3')}
+            </p>
+          </div>
 
           <div className="bg-slate-50 p-4 rounded-lg text-sm text-slate-500 border border-slate-100">
             <p>{t('spam_hint')}</p>
