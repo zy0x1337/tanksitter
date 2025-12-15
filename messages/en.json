@@ -16,7 +16,11 @@
     "email_placeholder": "Email Address",
     "button_send": "Send Magic Link",
     "button_sending": "Sending...",
-    "magic_link_hint": "No password. Just click the link in your email."
+    "magic_link_hint": "No password. Just click the link in your email.",
+    "success_title": "Email sent!",
+    "success_message": "We sent a magic link to <strong>{email}</strong>.<br>Click it to sign in.",
+    "spam_hint": "Didn't arrive? Please check your spam folder.",
+    "back_button": "Back to login"
   },
   "Dashboard": {
     "welcome": "Welcome back, {email}!",

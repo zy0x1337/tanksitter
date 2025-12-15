@@ -87,11 +87,33 @@ export default async function Dashboard({
             </div>
           ))}
 
-          {/* Empty State */}
+                    {/* Empty State */}
           {(!tanks || tanks.length === 0) && (
-            <div className="col-span-full py-12 text-center border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
-              <p className="text-gray-500 mb-4">{t('no_tanks')}</p>
-              <CreateTankDialog />
+            <div className="col-span-full py-16 px-4 flex flex-col items-center justify-center text-center bg-white rounded-3xl border-2 border-dashed border-blue-200 shadow-sm">
+              <div className="bg-blue-50 p-6 rounded-full mb-6 animate-in zoom-in duration-500">
+                <span className="text-5xl">🐠</span>
+              </div>
+              
+              <h3 className="text-2xl font-bold text-slate-900 mb-3">
+                Willkommen bei TankSitter!
+              </h3>
+              
+              <p className="text-slate-500 max-w-md mb-8 leading-relaxed">
+                Dein Dashboard ist noch leer. Erstelle jetzt dein erstes Aquarium, 
+                um den <strong>Sitter-Link</strong> zu generieren.
+              </p>
+              
+              <CreateTankDialog 
+                trigger={
+                  <Button size="lg" className="text-lg px-8 h-14 bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-200 rounded-full transition-transform hover:scale-105 active:scale-95">
+                    Erstes Becken anlegen 🚀
+                  </Button>
+                }
+              />
+              
+              <p className="text-xs text-slate-400 mt-6">
+                Dauert nur 10 Sekunden. Kein Technik-Wissen nötig.
+              </p>
             </div>
           )}
         </div>

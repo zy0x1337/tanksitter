@@ -16,7 +16,7 @@ import {
 import { createTank } from '@/actions/tanks'
 import { useTranslations } from 'next-intl'
 
-export function CreateTankDialog() {
+export function CreateTankDialog({ trigger }: { trigger?: React.ReactNode }) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const t = useTranslations('Dashboard')

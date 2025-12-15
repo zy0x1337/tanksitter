@@ -16,7 +16,11 @@
     "email_placeholder": "E-Mail Adresse",
     "button_send": "Magic Link senden",
     "button_sending": "Sendet...",
-    "magic_link_hint": "Kein Passwort. Einfach auf den Link in deiner E-Mail klicken."
+    "magic_link_hint": "Kein Passwort. Einfach auf den Link in deiner E-Mail klicken.",
+    "success_title": "E-Mail versendet!",
+    "success_message": "Wir haben einen magischen Link an <strong>{email}</strong> gesendet.<br>Klicke darauf, um dich anzumelden.",
+    "spam_hint": "Nicht angekommen? Prüfe bitte auch deinen Spam-Ordner.",
+    "back_button": "Zurück zur Eingabe"
   },
   "Dashboard": {
     "welcome": "Willkommen zurück, {email}!",

@@ -5,9 +5,9 @@ import { useLocale, useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase-client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { MailCheck, Loader2 } from 'lucide-react' // Icons für Professionalität
-import { motion, AnimatePresence } from 'framer-motion' // Optional für smooth Übergänge, sonst einfaches CSS
+import { MailCheck, Loader2 } from 'lucide-react'
 
+// Base-URL Helper
 function getBaseUrl() {
   const envUrl = process.env.NEXT_PUBLIC_SITE_URL
   if (envUrl) return envUrl.replace(/\/$/, '')
@@ -20,7 +20,7 @@ export default function LoginPage() {
   const locale = useLocale()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false) // Neuer State
+  const [success, setSuccess] = useState(false)
   const supabase = createClient()
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -38,14 +38,13 @@ export default function LoginPage() {
     setLoading(false)
 
     if (error) {
-      // Hier könnte man auch einen Toast nutzen, aber alert ist für Error ok
-      alert('Ein Fehler ist aufgetreten: ' + error.message)
+      alert('Error: ' + error.message) // Einfaches Error-Handling ist ok
     } else {
-      setSuccess(true) // Zeige Success-Screen
+      setSuccess(true)
     }
   }
 
-  // Seriöser Success-State statt Alert
+  // Success-State (Jetzt übersetzt!)
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 p-4">
@@ -54,15 +53,20 @@ export default function LoginPage() {
             <MailCheck className="w-8 h-8" />
           </div>
           
-          <h2 className="text-2xl font-bold text-slate-900">E-Mail versendet!</h2>
+          <h2 className="text-2xl font-bold text-slate-900">
+            {t('success_title')}
+          </h2>
           
           <p className="text-slate-600 leading-relaxed">
-            Wir haben einen magischen Link an <strong>{email}</strong> gesendet.
-            <br/>Klicke darauf, um dich anzumelden.
+            {t.rich('success_message', {
+              email: email,
+              strong: (chunks) => <strong className="font-semibold text-slate-900">{chunks}</strong>,
+              br: () => <br />
+            })}
           </p>
 
           <div className="bg-slate-50 p-4 rounded-lg text-sm text-slate-500 border border-slate-100">
-            <p>Nicht angekommen? Prüfe bitte auch deinen Spam-Ordner.</p>
+            <p>{t('spam_hint')}</p>
           </div>
 
           <Button 
@@ -70,13 +74,14 @@ export default function LoginPage() {
             onClick={() => setSuccess(false)}
             className="w-full mt-4"
           >
-            Zurück zur Eingabe
+            {t('back_button')}
           </Button>
         </div>
       </div>
     )
   }
 
+  // Normales Formular
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 space-y-6">
