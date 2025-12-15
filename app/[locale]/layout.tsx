@@ -25,7 +25,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: {
     template: '%s | TankSitter',
-    default: 'TankSitter - Der Urlaubs-Guide für dein Aquarium',
+    default: 'TankSitter',
   },
   description: 'Erstelle kostenlose, visuelle Pflegepläne für deinen Aquariums-Sitter. Verhindere Überfütterung und Unfälle. Kein Login für den Sitter nötig.',
   manifest: "/manifest.json",
