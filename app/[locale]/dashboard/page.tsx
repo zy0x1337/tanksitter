@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
-import { Plus, Settings, Share2, ExternalLink } from 'lucide-react'
+import { Plus, Settings, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export default async function Dashboard({
@@ -14,10 +14,11 @@ export default async function Dashboard({
   const t = await getTranslations('Dashboard')
   const supabase = await createClient()
 
+  // Auth Check
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect(`/${locale}/login`)
 
-  // Tanks laden
+  // Daten laden
   const { data: tanks } = await supabase
     .from('tanks')
     .select('*')
@@ -48,23 +49,24 @@ export default async function Dashboard({
             {tanks.map((tank) => (
               <div key={tank.id} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-all group relative overflow-hidden">
                 
-                {/* Deko-Element */}
+                {/* Deko Background */}
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-50 to-transparent rounded-bl-full -mr-10 -mt-10 opacity-50 group-hover:opacity-100 transition-opacity" />
 
                 <div className="relative">
                   <h3 className="font-bold text-xl text-slate-900 mb-1 truncate pr-8">{tank.name}</h3>
                   <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-6">
-                    {new Date(tank.created_at).toLocaleDateString()}
+                    {t('created_at', { date: new Date(tank.created_at).toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-US') })}
                   </p>
 
                   <div className="flex gap-2">
                     <Link href={`/${locale}/dashboard/tank/${tank.id}`} className="flex-1">
                       <Button variant="outline" className="w-full justify-between group-hover:border-blue-200">
-                        Manage
+                        {t('manage_button')}
                         <Settings className="w-4 h-4 text-slate-400" />
                       </Button>
                     </Link>
                     
+                    {/* Public Sitter Link */}
                     <a href={`/${locale}/s/${tank.share_token}`} target="_blank" rel="noopener noreferrer">
                        <Button variant="secondary" size="icon" className="bg-blue-50 text-blue-600 hover:bg-blue-100">
                          <ExternalLink className="w-4 h-4" />
@@ -76,14 +78,14 @@ export default async function Dashboard({
             ))}
           </div>
         ) : (
-          // Empty State
+          // Empty State (Jetzt übersetzt)
           <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
             <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="text-4xl grayscale opacity-50">🐠</span>
             </div>
             <h3 className="text-lg font-bold text-slate-900 mb-2">{t('no_tanks')}</h3>
-            <p className="text-slate-500 mb-6 max-w-xs mx-auto text-sm">
-              Lege dein erstes Aquarium an, um Aufgaben zu erstellen und den Sitter-Link zu generieren.
+            <p className="text-slate-500 mb-6 max-w-xs mx-auto text-sm leading-relaxed">
+              {t('no_tanks_desc')}
             </p>
             <Link href={`/${locale}/dashboard/new`}>
               <Button variant="default" className="bg-blue-600 rounded-xl">
