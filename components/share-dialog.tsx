@@ -1,30 +1,30 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription
 } from '@/components/ui/dialog'
-import { Share2, Copy, Printer, Check } from 'lucide-react'
+import { Share2, Copy, Printer, Check, QrCode } from 'lucide-react'
 import QRCode from 'react-qr-code'
+import { useLocale } from 'next-intl'
 
-export function ShareDialog({ tankName, shareToken }: { tankName: string, shareToken: string }) {
+export function ShareDialog({ tankName, shareToken, triggerButton }: { tankName: string, shareToken: string, triggerButton?: React.ReactNode }) {
   const [copied, setCopied] = useState(false)
+  const [origin, setOrigin] = useState('')
+  const locale = useLocale()
   
-  // Wir bauen die URL dynamisch zusammen. 
-  // window.location.origin ist im Client verfügbar.
-  // Da wir SSR nutzen, müssen wir aufpassen, aber im onClick ist es sicher.
-  const getShareUrl = () => {
-    if (typeof window !== 'undefined') {
-      return `${window.location.origin}/de/s/${shareToken}` // TODO: Sprache dynamisch machen
-    }
-    return ''
-  }
+  // Hydration Fix: Origin erst im Client setzen
+  useEffect(() => {
+    setOrigin(window.location.origin)
+  }, [])
+
+  const shareUrl = origin ? `${origin}/${locale}/s/${shareToken}` : ''
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(getShareUrl())
+    navigator.clipboard.writeText(shareUrl)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -32,14 +32,16 @@ export function ShareDialog({ tankName, shareToken }: { tankName: string, shareT
   const handlePrint = () => {
   const printWindow = window.open('', '_blank')
   if (printWindow) {
-    // Wir holen uns das aktuelle Datum für den Ausdruck
-    const date = new Date().toLocaleDateString('de-DE')
+    const date = new Date().toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-US')
     
+    // Hole das SVG HTML
+    const qrSvg = document.getElementById('qr-code-svg')?.outerHTML || ''
+
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Pflegeplan - ${tankName}</title>
+          <title>TankSitter - ${tankName}</title>
           <style>
             body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; padding: 40px; max-width: 800px; margin: 0 auto; }
             .header { border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; }
@@ -69,48 +71,43 @@ export function ShareDialog({ tankName, shareToken }: { tankName: string, shareT
         <body>
           <div class="header">
             <div>
-              <h1>Aquarium Pflegeplan</h1>
-              <div class="meta">Becken: <strong>${tankName}</strong></div>
+              <h1>${tankName}</h1>
+              <div class="meta">TankSitter Guide</div>
             </div>
-            <div class="meta">Erstellt am: ${date}</div>
+            <div class="meta">${date}</div>
           </div>
 
           <div class="grid">
             <div class="instructions">
               <div class="note">
-                <strong>Wichtig für den Sitter:</strong><br>
-                Im Zweifel immer <strong>WENIGER</strong> füttern als zu viel. Fische verhungern nicht so schnell, aber Futterreste vergiften das Wasser.
-                <br><br>
-                Bei Problemen (Leck, Stromausfall, trübes Wasser): <strong>Nicht füttern, anrufen!</strong>
+                <strong>Important / Wichtig:</strong><br>
+                When in doubt, feed LESS. Fish don't starve easily, but leftover food kills the water.<br>
+                Im Zweifel WENIGER füttern.
               </div>
 
-              <h2>Aufgaben-Checkliste</h2>
+              <h2>Checklist</h2>
               <table>
                 <thead>
                   <tr>
-                    <th style="width: 50%">Aufgabe</th>
-                    <th style="width: 30%">Intervall</th>
-                    <th style="width: 20%">Erledigt</th>
+                    <th style="width: 50%">Task / Aufgabe</th>
+                    <th style="width: 30%">Freq</th>
+                    <th style="width: 20%">Done</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- Hier würden wir idealerweise die e echten Tasks reinloopen. 
-                       Da wir sie im Dialog nicht haben, lassen wir Platzhalterzeilen 
-                       oder müssten die Tasks als Prop übergeben. -->
                   <tr>
                     <td>
-                      <strong>Füttern</strong><br>
-                      <span style="color:#666; font-size:12px;">Siehe Fotos im QR-Code Link für Menge</span>
+                      <strong>Feeding / Füttern</strong><br>
+                      <span style="color:#666; font-size:12px;">See App for photos & amounts</span>
                     </td>
-                    <td>Täglich / Alle 2 Tage</td>
+                    <td>Daily / Täglich</td>
                     <td><div class="checkbox"></div></td>
                   </tr>
                    <tr>
-                    <td><strong>Technik-Check</strong> (Filter läuft? Temperatur ok?)</td>
-                    <td>Täglich</td>
+                    <td><strong>Check Filter & Temp</strong></td>
+                    <td>Daily / Täglich</td>
                     <td><div class="checkbox"></div></td>
                   </tr>
-                  <!-- Leere Zeilen für Notizen -->
                    <tr>
                     <td>&nbsp;</td>
                     <td></td>
@@ -121,10 +118,11 @@ export function ShareDialog({ tankName, shareToken }: { tankName: string, shareT
             </div>
 
             <div class="qr-section">
-              <span class="qr-label">Scan für Fotos & Details</span>
-              <div class="qr">${document.getElementById('qr-code-svg')?.outerHTML || ''}</div>
+              <span class="qr-label">SCAN ME</span>
+              <div class="qr">${qrSvg}</div>
               <p style="font-size: 12px; margin-top: 15px; color: #666;">
-                Öffnet die interaktive Ansicht mit Fotos der Futterdosen und Mengen.
+                Scan for photos & details.<br>
+                Scan für Fotos & Details.
               </p>
             </div>
           </div>
@@ -142,47 +140,50 @@ export function ShareDialog({ tankName, shareToken }: { tankName: string, shareT
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="gap-2">
-          <Share2 className="h-4 w-4" /> Teilen
-        </Button>
+        {triggerButton || (
+          <Button variant="outline" className="gap-2">
+            <Share2 className="h-4 w-4" /> Share
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Zugang teilen</DialogTitle>
+          <DialogTitle>Share Access / Zugang teilen</DialogTitle>
           <DialogDescription>
-            Gib diesen Link oder QR-Code deinem Sitter. Er braucht keinen Account.
+            Give this to your sitter. No login required.
           </DialogDescription>
         </DialogHeader>
         
         <div className="flex flex-col items-center justify-center p-6 space-y-6">
           
           {/* QR Code Anzeige */}
-          <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100" id="qr-code-wrapper">
-             {/* Wir rendern den QR Code hier, damit wir ihn fürs Drucken grabben können */}
-             <div style={{ height: "auto", margin: "0 auto", maxWidth: 150, width: "100%" }}>
-                <QRCode
-                  size={256}
-                  style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                  value={typeof window !== 'undefined' ? `${window.location.origin}/de/s/${shareToken}` : ''}
-                  viewBox={`0 0 256 256`}
-                  id="qr-code-svg"
-                />
-            </div>
+          <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100" id="qr-code-wrapper">
+             {origin && (
+                 <div style={{ height: "auto", margin: "0 auto", maxWidth: 150, width: "100%" }}>
+                    <QRCode
+                      size={256}
+                      style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                      value={shareUrl}
+                      viewBox={`0 0 256 256`}
+                      id="qr-code-svg"
+                    />
+                </div>
+             )}
           </div>
 
           <div className="flex gap-2 w-full">
             <div className="grid flex-1 gap-2">
               <Label htmlFor="link" className="sr-only">Link</Label>
-              <Input id="link" defaultValue={typeof window !== 'undefined' ? `${window.location.origin}/de/s/${shareToken}` : 'Lädt...'} readOnly />
+              <Input id="link" defaultValue={shareUrl || 'Loading...'} readOnly className="bg-slate-50" />
             </div>
-            <Button type="button" size="icon" className="px-3" onClick={handleCopy}>
+            <Button type="button" size="icon" className="px-3 shrink-0" onClick={handleCopy}>
               {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
             </Button>
           </div>
 
           <Button variant="secondary" className="w-full gap-2" onClick={handlePrint}>
             <Printer className="h-4 w-4" /> 
-            Anleitung drucken (PDF)
+            Print Instructions (PDF)
           </Button>
 
         </div>

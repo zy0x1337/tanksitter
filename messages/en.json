@@ -48,7 +48,7 @@
     "your_tanks": "Your Tanks",
     "no_tanks": "No tanks setup yet.",
     "no_tanks_desc": "Create your first tank to add tasks and generate your sitter link.",
-    "new_tank_button": "+ New Tank",
+    "new_tank_button": "New Tank",
     "manage_button": "Manage",
     "created_at": "Created on {date}"
   },

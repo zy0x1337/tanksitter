@@ -48,7 +48,7 @@
     "your_tanks": "Deine Becken",
     "no_tanks": "Noch keine Becken eingerichtet.",
     "no_tanks_desc": "Lege dein erstes Aquarium an, um Aufgaben zu erstellen und den Sitter-Link zu generieren.",
-    "new_tank_button": "+ Neues Becken",
+    "new_tank_button": "Neues Becken",
     "manage_button": "Verwalten",
     "created_at": "Erstellt am {date}"
   },

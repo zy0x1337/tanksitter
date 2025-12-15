@@ -2,8 +2,9 @@ import { createClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
-import { Plus, Settings, ExternalLink } from 'lucide-react'
+import { Plus, Settings, QrCode } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { ShareDialog } from '@/components/share-dialog' // WICHTIG: Import
 
 export default async function Dashboard({
   params
@@ -66,19 +67,24 @@ export default async function Dashboard({
                       </Button>
                     </Link>
                     
-                    {/* Public Sitter Link */}
-                    <a href={`/${locale}/s/${tank.share_token}`} target="_blank" rel="noopener noreferrer">
-                       <Button variant="secondary" size="icon" className="bg-blue-50 text-blue-600 hover:bg-blue-100">
-                         <ExternalLink className="w-4 h-4" />
-                       </Button>
-                    </a>
+                    {/* Share Dialog Button */}
+                    <ShareDialog 
+                      tankName={tank.name}
+                      shareToken={tank.share_token}
+                      triggerButton={
+                        <Button variant="secondary" size="icon" className="bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-100 shadow-sm">
+                           <QrCode className="w-4 h-4" />
+                        </Button>
+                      }
+                    />
+
                   </div>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          // Empty State (Jetzt übersetzt)
+          // Empty State
           <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
             <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="text-4xl grayscale opacity-50">🐠</span>
