@@ -30,32 +30,114 @@ export function ShareDialog({ tankName, shareToken }: { tankName: string, shareT
   }
 
   const handlePrint = () => {
-    // Ein einfaches Druck-Fenster öffnen
-    const printWindow = window.open('', '_blank')
-    if (printWindow) {
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>Sitter Guide - ${tankName}</title>
-            <style>
-              body { font-family: sans-serif; text-align: center; padding: 40px; }
-              h1 { font-size: 24px; margin-bottom: 10px; }
-              p { color: #666; margin-bottom: 40px; }
-              .qr { margin: 0 auto; max-width: 300px; }
-            </style>
-          </head>
-          <body>
-            <h1>Scan mich zum Füttern! 🐟</h1>
-            <p>Aquarium: ${tankName}</p>
-            <div class="qr">${document.getElementById('qr-code-svg')?.outerHTML || ''}</div>
-            <p style="margin-top: 40px; font-size: 12px;">Powered by TankSitter</p>
-            <script>window.print();</script>
-          </body>
-        </html>
-      `)
-      printWindow.document.close()
-    }
+  const printWindow = window.open('', '_blank')
+  if (printWindow) {
+    // Wir holen uns das aktuelle Datum für den Ausdruck
+    const date = new Date().toLocaleDateString('de-DE')
+    
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Pflegeplan - ${tankName}</title>
+          <style>
+            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; padding: 40px; max-width: 800px; margin: 0 auto; }
+            .header { border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; }
+            h1 { font-size: 28px; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
+            .meta { font-size: 14px; color: #666; }
+            
+            .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
+            
+            .instructions h2 { font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-top: 0; }
+            .note { background: #f9f9f9; border-left: 4px solid #333; padding: 15px; font-size: 14px; margin-bottom: 30px; }
+            
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+            th { text-align: left; border-bottom: 2px solid #ddd; padding: 10px 5px; text-transform: uppercase; font-size: 12px; color: #666; }
+            td { border-bottom: 1px solid #eee; padding: 12px 5px; vertical-align: top; }
+            .checkbox { width: 20px; height: 20px; border: 1px solid #333; display: inline-block; }
+            
+            .qr-section { text-align: center; background: #eee; padding: 30px; border-radius: 8px; }
+            .qr-label { font-weight: bold; margin-bottom: 10px; display: block; }
+            .qr svg { max-width: 150px; height: auto; }
+            
+            @media print {
+              body { padding: 0; }
+              .no-print { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <h1>Aquarium Pflegeplan</h1>
+              <div class="meta">Becken: <strong>${tankName}</strong></div>
+            </div>
+            <div class="meta">Erstellt am: ${date}</div>
+          </div>
+
+          <div class="grid">
+            <div class="instructions">
+              <div class="note">
+                <strong>Wichtig für den Sitter:</strong><br>
+                Im Zweifel immer <strong>WENIGER</strong> füttern als zu viel. Fische verhungern nicht so schnell, aber Futterreste vergiften das Wasser.
+                <br><br>
+                Bei Problemen (Leck, Stromausfall, trübes Wasser): <strong>Nicht füttern, anrufen!</strong>
+              </div>
+
+              <h2>Aufgaben-Checkliste</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 50%">Aufgabe</th>
+                    <th style="width: 30%">Intervall</th>
+                    <th style="width: 20%">Erledigt</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Hier würden wir idealerweise die e echten Tasks reinloopen. 
+                       Da wir sie im Dialog nicht haben, lassen wir Platzhalterzeilen 
+                       oder müssten die Tasks als Prop übergeben. -->
+                  <tr>
+                    <td>
+                      <strong>Füttern</strong><br>
+                      <span style="color:#666; font-size:12px;">Siehe Fotos im QR-Code Link für Menge</span>
+                    </td>
+                    <td>Täglich / Alle 2 Tage</td>
+                    <td><div class="checkbox"></div></td>
+                  </tr>
+                   <tr>
+                    <td><strong>Technik-Check</strong> (Filter läuft? Temperatur ok?)</td>
+                    <td>Täglich</td>
+                    <td><div class="checkbox"></div></td>
+                  </tr>
+                  <!-- Leere Zeilen für Notizen -->
+                   <tr>
+                    <td>&nbsp;</td>
+                    <td></td>
+                    <td><div class="checkbox"></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="qr-section">
+              <span class="qr-label">Scan für Fotos & Details</span>
+              <div class="qr">${document.getElementById('qr-code-svg')?.outerHTML || ''}</div>
+              <p style="font-size: 12px; margin-top: 15px; color: #666;">
+                Öffnet die interaktive Ansicht mit Fotos der Futterdosen und Mengen.
+              </p>
+            </div>
+          </div>
+          
+          <script>
+            window.onload = function() { window.print(); }
+          </script>
+        </body>
+      </html>
+    `)
+    printWindow.document.close()
   }
+}
 
   return (
     <Dialog>
