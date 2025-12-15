@@ -52,7 +52,7 @@
     "manage_button": "Manage",
     "created_at": "Created on {date}"
   },
-    "Sitter": {
+  "Sitter": {
     "emergency_button": "Report Emergency / Issue",
     "todo_today_title": "To Do Today",
     "empty_title": "All done! 🎉",
@@ -67,8 +67,9 @@
       "done_status": "Done for today ✅",
       "no_description": "No description. See photo.",
       "image_alt": "Task photo"
-    },
-    "Forms": {
+    }
+  },
+  "Forms": {
     "create_tank_title": "New Tank",
     "tank_name_label": "Tank Name",
     "tank_name_placeholder": "e.g. Shrimp Cube 10G",
@@ -83,7 +84,7 @@
     "frequency_label": "Frequency",
     "image_label": "Photo (Important!)",
     "upload_hint": "Click or drag image here",
-    "delete_tank": "Delete Tank"
+    "delete_tank": "Delete Tank",
+    "delete_confirm": "Delete?"
   }
- }
 }
