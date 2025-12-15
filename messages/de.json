@@ -67,6 +67,23 @@
       "done_status": "Erledigt für heute ✅",
       "no_description": "Keine Beschreibung. Siehe Foto.",
       "image_alt": "Foto der Aufgabe"
-    }
+    },
+      "Forms": {
+    "create_tank_title": "Neues Aquarium",
+    "tank_name_label": "Name des Beckens",
+    "tank_name_placeholder": "z.B. Garnelen Cube 30L",
+    "emergency_label": "Notfall Kontakt (WhatsApp/Tel)",
+    "emergency_placeholder": "z.B. +49 170 12345678",
+    "save_button": "Speichern",
+    "saving": "Speichert...",
+    "cancel": "Abbrechen",
+    "add_task_title": "Neue Aufgabe",
+    "task_title_label": "Titel",
+    "task_title_placeholder": "z.B. Füttern",
+    "frequency_label": "Wie oft?",
+    "image_label": "Foto (Wichtig!)",
+    "upload_hint": "Klicken oder Bild hierher ziehen",
+    "delete_tank": "Becken löschen"
   }
+ }
 }

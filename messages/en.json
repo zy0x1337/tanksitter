@@ -67,6 +67,23 @@
       "done_status": "Done for today ✅",
       "no_description": "No description. See photo.",
       "image_alt": "Task photo"
-    }
+    },
+    "Forms": {
+    "create_tank_title": "New Tank",
+    "tank_name_label": "Tank Name",
+    "tank_name_placeholder": "e.g. Shrimp Cube 10G",
+    "emergency_label": "Emergency Contact (WhatsApp/Phone)",
+    "emergency_placeholder": "e.g. +1 555 0123",
+    "save_button": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "add_task_title": "New Task",
+    "task_title_label": "Title",
+    "task_title_placeholder": "e.g. Feeding",
+    "frequency_label": "Frequency",
+    "image_label": "Photo (Important!)",
+    "upload_hint": "Click or drag image here",
+    "delete_tank": "Delete Tank"
   }
+ }
 }
