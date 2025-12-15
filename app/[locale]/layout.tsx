@@ -3,18 +3,22 @@ import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/theme-provider"; // Muss existieren (siehe Schritt 2 oben)
 import "../globals.css";
 
 // 1. Schriftart laden
 const inter = Inter({ subsets: ['latin'] });
 
-// 2. Viewport Konfiguration (Wichtig für PWA "App-Feeling")
+// 2. Viewport Konfiguration
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0c0a09" }, // Stone 950 für Darkmode
+  ],
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  userScalable: false, // Verhindert Zoomen auf Mobile (wirkt wie native App)
+  userScalable: false,
 };
 
 // 3. Metadaten inkl. PWA Einstellungen
@@ -24,7 +28,7 @@ export const metadata: Metadata = {
     default: 'TankSitter - Der Urlaubs-Guide für dein Aquarium',
   },
   description: 'Erstelle kostenlose, visuelle Pflegepläne für deinen Aquariums-Sitter. Verhindere Überfütterung und Unfälle. Kein Login für den Sitter nötig.',
-  manifest: "/manifest.json", // Verweis auf die PWA Config
+  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -50,23 +54,27 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  // Wichtig für Next.js 15: Params awaiten
   const { locale } = await params;
-
-  // Übersetzungen laden
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    // suppressHydrationWarning ist nötig für next-themes, da der Server nicht weiß, welches Theme der Client hat
+    <html lang={locale} suppressHydrationWarning>
       <body className={inter.className}>
-        <NextIntlClientProvider messages={messages}>
-          
-          {children}
-          
-          {/* Toaster für Notifications (Sonner) */}
-          <Toaster position="top-center" richColors />
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+        >
+            <NextIntlClientProvider messages={messages}>
+              
+              {children}
+              
+              <Toaster position="top-center" richColors />
 
-        </NextIntlClientProvider>
+            </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
