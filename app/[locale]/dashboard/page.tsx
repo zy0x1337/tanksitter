@@ -59,7 +59,7 @@ export default async function Dashboard({
                   </p>
 
                   <div className="flex gap-2">
-                    <Link href={`/${locale}/dashboard/tank/${tank.id}`} className="flex-1">
+                    <Link href={`/${locale}/dashboard/${tank.id}`} className="flex-1">
                       <Button variant="outline" className="w-full justify-between group-hover:border-blue-200">
                         {t('manage_button')}
                         <Settings className="w-4 h-4 text-slate-400" />
