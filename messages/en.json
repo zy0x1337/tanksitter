@@ -49,8 +49,21 @@
     "no_tanks": "No tanks setup yet.",
     "new_tank_button": "+ New Tank"
   },
-  "Sitter": {
+    "Sitter": {
     "emergency_button": "Report Emergency / Issue",
-    "todo_today_title": "To Do Today"
+    "todo_today_title": "To Do Today",
+    "empty_title": "All done! 🎉",
+    "empty_desc": "No tasks scheduled for today.",
+    "task_frequency": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "once": "One-time"
+    },
+    "card": {
+      "done_button": "Done ✅",
+      "done_status": "Done for today ✅",
+      "no_description": "No description. See photo.",
+      "image_alt": "Task photo"
+    }
   }
 }

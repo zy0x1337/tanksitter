@@ -49,8 +49,21 @@
     "no_tanks": "Noch keine Becken eingerichtet.",
     "new_tank_button": "+ Neues Becken"
   },
-  "Sitter": {
+    "Sitter": {
     "emergency_button": "Notfall / Problem melden",
-    "todo_today_title": "Heute zu tun"
+    "todo_today_title": "Heute zu tun",
+    "empty_title": "Alles erledigt! 🎉",
+    "empty_desc": "Für heute stehen keine Aufgaben an.",
+    "task_frequency": {
+      "daily": "Täglich",
+      "weekly": "Wöchentlich",
+      "once": "Einmalig"
+    },
+    "card": {
+      "done_button": "Erledigt ✅",
+      "done_status": "Erledigt für heute ✅",
+      "no_description": "Keine Beschreibung. Siehe Foto.",
+      "image_alt": "Foto der Aufgabe"
+    }
   }
 }
