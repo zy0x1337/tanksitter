@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { Plus, Settings, QrCode } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { ShareDialog } from '@/components/share-dialog' // WICHTIG: Import
+import { ShareDialog } from '@/components/share-dialog'
+import { InstallPrompt } from '@/components/install-prompt'
 
 export default async function Dashboard({
   params
@@ -102,6 +103,7 @@ export default async function Dashboard({
         )}
 
       </div>
+      <InstallPrompt />
     </div>
   )
 }

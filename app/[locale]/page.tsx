@@ -96,8 +96,8 @@ export default function IndexPage() {
             </div>
             
             {/* Pointer Text */}
-<div className="absolute -right-16 bottom-24 bg-yellow-100 text-yellow-800 px-3 py-1 rounded-lg text-xs font-bold rotate-12 shadow-sm border border-yellow-200 hidden lg:block z-10">
-  {t('mockup.hint_finger')}
+<div className="absolute bottom-4 right-4 bg-yellow-100 text-yellow-800 px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm border border-yellow-200 z-20 flex items-center gap-2 animate-bounce">
+  <span>👇</span> {t('mockup.hint_finger')}
 </div>
           </div>
         </div>
