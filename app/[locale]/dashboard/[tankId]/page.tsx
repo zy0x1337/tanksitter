@@ -1,18 +1,19 @@
 'use client'
 
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect, use, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-client'
-import { useTranslations, useLocale } from 'next-intl'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { ArrowLeft, Trash2, Plus, Loader2, Image as ImageIcon } from 'lucide-react'
+import { ArrowLeft, Trash2, Plus, Loader2, Image as ImageIcon, AlertTriangle, UploadCloud, X } from 'lucide-react'
 import Link from 'next/link'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { toast } from "sonner"
+import { useDropzone } from 'react-dropzone'
 
-// Wichtig: Interface passend zum Dateinamen [tankId]
 interface PageProps {
   params: Promise<{ 
     locale: string; 
@@ -21,7 +22,6 @@ interface PageProps {
 }
 
 export default function TankDetailPage({ params }: PageProps) {
-  // Params "unwrap" (Next.js 15 Standard)
   const { locale, tankId } = use(params)
   
   const t = useTranslations('Forms')
@@ -35,29 +35,29 @@ export default function TankDetailPage({ params }: PageProps) {
   // Form State
   const [isAdding, setIsAdding] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [deletingTank, setDeletingTank] = useState(false)
+  
   const [newTaskTitle, setNewTaskTitle] = useState('')
   const [newTaskDesc, setNewTaskDesc] = useState('')
   const [newTaskFreq, setNewTaskFreq] = useState('daily')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
 
-  // 1. Daten laden (Nutzt tankId aus URL)
+  // 1. Daten laden
   useEffect(() => {
     const fetchData = async () => {
-      // Tank laden
       const { data: tankData } = await supabase
         .from('tanks')
         .select('*')
-        .eq('id', tankId) // Hier tankId nutzen!
+        .eq('id', tankId)
         .single()
       
       if (tankData) {
           setTank(tankData)
-          // Tasks laden
           const { data: taskData } = await supabase
             .from('tasks')
             .select('*')
-            .eq('tank_id', tankId) // Hier tankId nutzen!
+            .eq('tank_id', tankId)
             .order('created_at')
           
           setTasks(taskData || [])
@@ -65,29 +65,41 @@ export default function TankDetailPage({ params }: PageProps) {
       setLoading(false)
     }
     fetchData()
-  }, [tankId, supabase]) // Dependency Array angepasst
+  }, [tankId, supabase])
 
-  // 2. Bild Vorschau
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
+  // 2. Drag & Drop Logik
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles && acceptedFiles[0]) {
+      const file = acceptedFiles[0]
       setImageFile(file)
       setImagePreview(URL.createObjectURL(file))
     }
+  }, [])
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { 'image/*': [] },
+    maxFiles: 1,
+    multiple: false
+  })
+
+  const removeImage = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setImageFile(null)
+    setImagePreview(null)
   }
 
   // 3. Task Speichern
   const handleAddTask = async (e: React.FormEvent) => {
     e.preventDefault()
     setUploading(true)
+    const toastId = toast.loading(t('saving'))
 
     let imagePath = null
 
-    // A. Bild Upload
     if (imageFile) {
       const fileExt = imageFile.name.split('.').pop()
       const fileName = `${Math.random()}.${fileExt}`
-      // Ordner-Struktur: tankId/random.jpg
       const filePath = `${tankId}/${fileName}`
 
       const { error: uploadError } = await supabase.storage
@@ -95,18 +107,18 @@ export default function TankDetailPage({ params }: PageProps) {
         .upload(filePath, imageFile)
 
       if (uploadError) {
-        alert('Upload Error: ' + uploadError.message)
+        toast.dismiss(toastId)
+        toast.error('Upload failed: ' + uploadError.message)
         setUploading(false)
         return
       }
       imagePath = filePath
     }
 
-    // B. DB Insert
     const { error: dbError } = await supabase
       .from('tasks')
       .insert({
-        tank_id: tankId, // Hier tankId nutzen!
+        tank_id: tankId,
         title: newTaskTitle,
         description: newTaskDesc,
         frequency_type: newTaskFreq,
@@ -115,10 +127,12 @@ export default function TankDetailPage({ params }: PageProps) {
       })
 
     setUploading(false)
+    toast.dismiss(toastId)
 
     if (dbError) {
-      alert(dbError.message)
+      toast.error('Error: ' + dbError.message)
     } else {
+      toast.success(t('add_task_title') + ' success!')
       setIsAdding(false)
       setNewTaskTitle('')
       setNewTaskDesc('')
@@ -128,11 +142,46 @@ export default function TankDetailPage({ params }: PageProps) {
     }
   }
 
-  // 4. Löschen
+  // 4. Task Löschen
   const handleDeleteTask = async (taskId: string) => {
     if(!confirm(t('delete_confirm') || 'Delete?')) return
-    await supabase.from('tasks').delete().eq('id', taskId)
-    setTasks(tasks.filter(t => t.id !== taskId))
+    
+    setTasks(prev => prev.filter(t => t.id !== taskId))
+    toast.info("Task deleted")
+    
+    const { error } = await supabase.from('tasks').delete().eq('id', taskId)
+    if (error) {
+        toast.error("Error deleting task")
+        window.location.reload()
+    }
+  }
+
+  // 5. Tank Löschen
+  const handleDeleteTank = async () => {
+    const confirmMessage = locale === 'de' 
+      ? `Möchtest du "${tank.name}" wirklich löschen? Alle Aufgaben und Bilder werden entfernt.`
+      : `Do you really want to delete "${tank.name}"? All tasks and images will be permanently removed.`
+
+    if (!confirm(confirmMessage)) return
+
+    setDeletingTank(true)
+    const toastId = toast.loading("Deleting tank...")
+
+    const { error } = await supabase
+      .from('tanks')
+      .delete()
+      .eq('id', tankId)
+
+    if (error) {
+      toast.dismiss(toastId)
+      toast.error('Error: ' + error.message)
+      setDeletingTank(false)
+    } else {
+      toast.dismiss(toastId)
+      toast.success("Tank deleted")
+      router.push(`/${locale}/dashboard`)
+      router.refresh()
+    }
   }
 
   if (loading) return <div className="p-8 flex justify-center"><Loader2 className="animate-spin text-blue-600" /></div>
@@ -145,7 +194,6 @@ export default function TankDetailPage({ params }: PageProps) {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
-                {/* Zurück zum Dashboard */}
                 <Link href={`/${locale}/dashboard`} className="bg-white p-2 rounded-full border border-slate-200 text-slate-500 hover:text-slate-800 transition-colors">
                     <ArrowLeft size={20} />
                 </Link>
@@ -178,8 +226,6 @@ export default function TankDetailPage({ params }: PageProps) {
                 <h2 className="font-bold text-lg mb-6 text-slate-800">{t('add_task_title')}</h2>
                 
                 <form onSubmit={handleAddTask} className="space-y-5">
-                    
-                    {/* Titel */}
                     <div>
                         <Label className="mb-1.5 block font-medium">{t('task_title_label')}</Label>
                         <Input 
@@ -190,8 +236,6 @@ export default function TankDetailPage({ params }: PageProps) {
                             className="h-11"
                         />
                     </div>
-
-                    {/* Frequenz Select */}
                     <div>
                         <Label className="mb-1.5 block font-medium">{t('frequency_label')}</Label>
                         <Select value={newTaskFreq} onValueChange={setNewTaskFreq}>
@@ -206,51 +250,68 @@ export default function TankDetailPage({ params }: PageProps) {
                         </Select>
                     </div>
 
-                    {/* Image Upload Area */}
+                    {/* DRAG & DROP ZONE */}
                     <div>
                         <Label className="mb-1.5 block font-medium">{t('image_label')}</Label>
-                        <div className="group border-2 border-dashed border-slate-200 rounded-xl p-6 flex flex-col items-center justify-center bg-slate-50/50 hover:bg-blue-50/50 hover:border-blue-300 transition-all cursor-pointer relative overflow-hidden">
-                            <input 
-                                type="file" 
-                                accept="image/*" 
-                                onChange={handleImageChange}
-                                className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                            />
-                            
-                            {imagePreview ? (
-                                <div className="relative w-full h-48">
-                                  <img src={imagePreview} className="w-full h-full object-cover rounded-lg shadow-sm" />
-                                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-lg">
-                                    <span className="text-white text-sm font-medium bg-black/50 px-3 py-1 rounded-full">Change Image</span>
-                                  </div>
-                                </div>
-                            ) : (
-                                <div className="text-center text-slate-400 group-hover:text-blue-500 transition-colors">
-                                    <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center mx-auto mb-3">
-                                      <ImageIcon className="w-6 h-6" />
-                                    </div>
-                                    <span className="text-sm font-medium">{t('upload_hint')}</span>
-                                </div>
-                            )}
+                        
+                        <div 
+                          {...getRootProps()} 
+                          className={`
+                            relative border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center transition-all cursor-pointer min-h-[200px] text-center
+                            ${isDragActive ? 'border-blue-500 bg-blue-50 scale-[1.02]' : 'border-slate-200 bg-slate-50/50 hover:bg-slate-100 hover:border-slate-300'}
+                            ${imagePreview ? 'border-none p-0 overflow-hidden bg-black' : ''}
+                          `}
+                        >
+                          <input {...getInputProps()} />
+                          
+                          {imagePreview ? (
+                            <div className="relative w-full h-64 group">
+                              <img src={imagePreview} className="w-full h-full object-cover" />
+                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                                 <span className="text-white font-medium bg-black/50 px-3 py-1 rounded-full text-sm backdrop-blur-sm">
+                                   Click to change
+                                 </span>
+                                 <Button 
+                                   type="button" 
+                                   variant="destructive" 
+                                   size="icon" 
+                                   className="h-10 w-10 rounded-full"
+                                   onClick={removeImage}
+                                 >
+                                    <X className="w-5 h-5" />
+                                 </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="space-y-3 pointer-events-none">
+                              <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto transition-colors ${isDragActive ? 'bg-blue-100 text-blue-600' : 'bg-white text-slate-400 shadow-sm'}`}>
+                                {isDragActive ? <UploadCloud className="w-8 h-8 animate-bounce" /> : <ImageIcon className="w-8 h-8" />}
+                              </div>
+                              <div>
+                                 <p className="text-sm font-bold text-slate-700">
+                                   {isDragActive ? "Drop image here!" : t('upload_hint')}
+                                 </p>
+                                 <p className="text-xs text-slate-400 mt-1">PNG, JPG, WEBP (max. 5MB)</p>
+                              </div>
+                            </div>
+                          )}
                         </div>
                     </div>
 
-                    {/* Beschreibung */}
                     <div>
                         <Label className="mb-1.5 block font-medium">Description (Optional)</Label>
                         <Textarea 
                             value={newTaskDesc}
                             onChange={e => setNewTaskDesc(e.target.value)}
-                            placeholder="Details, warnings, amounts..."
+                            placeholder="Details..."
                             className="resize-none"
                             rows={3}
                         />
                     </div>
-
                     <Button type="submit" disabled={uploading} className="w-full h-12 text-lg bg-blue-600 hover:bg-blue-700 font-bold rounded-xl mt-2">
                         {uploading ? (
                           <span className="flex items-center gap-2">
-                            <Loader2 className="animate-spin w-5 h-5" /> Uploading...
+                            <Loader2 className="animate-spin w-5 h-5" /> {t('saving')}
                           </span>
                         ) : t('save_button')}
                     </Button>
@@ -262,7 +323,6 @@ export default function TankDetailPage({ params }: PageProps) {
         <div className="space-y-4">
             {tasks.map(task => (
                 <div key={task.id} className="bg-white p-4 rounded-2xl border border-slate-100 flex items-center gap-4 group hover:shadow-md transition-all hover:border-blue-100">
-                    {/* Thumbnail */}
                     <div className="h-20 w-20 bg-slate-100 rounded-xl overflow-hidden shrink-0 border border-slate-100 relative">
                         {task.image_path ? (
                              <img src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/task-images/${task.image_path}`} className="w-full h-full object-cover" />
@@ -270,7 +330,6 @@ export default function TankDetailPage({ params }: PageProps) {
                             <div className="w-full h-full flex items-center justify-center"><ImageIcon className="w-6 h-6 text-slate-300" /></div>
                         )}
                     </div>
-                    
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className="font-bold text-slate-900 truncate">{task.title}</h3>
@@ -282,7 +341,6 @@ export default function TankDetailPage({ params }: PageProps) {
                         </div>
                         <p className="text-sm text-slate-500 line-clamp-1">{task.description || "No description"}</p>
                     </div>
-
                     <Button variant="ghost" size="icon" onClick={() => handleDeleteTask(task.id)} className="text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-xl h-10 w-10">
                         <Trash2 className="w-5 h-5" />
                     </Button>
@@ -292,9 +350,34 @@ export default function TankDetailPage({ params }: PageProps) {
             {tasks.length === 0 && !isAdding && (
                 <div className="text-center py-16 px-4 text-slate-400 border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50/50">
                     <p className="font-medium">No tasks yet.</p>
-                    <p className="text-sm mt-1">Click the <span className="text-blue-500 font-bold">+ New Task</span> button to add one.</p>
                 </div>
             )}
+        </div>
+
+        {/* DANGER ZONE */}
+        <div className="mt-20 pt-10 border-t border-slate-200">
+          <div className="bg-red-50 border border-red-100 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h3 className="text-red-900 font-bold flex items-center gap-2 mb-1">
+                <AlertTriangle className="h-5 w-5" />
+                {t('delete_tank')}
+              </h3>
+              <p className="text-red-700 text-sm">
+                {locale === 'de' 
+                  ? 'Diese Aktion löscht das Becken und alle Aufgaben unwiderruflich.' 
+                  : 'This action permanently removes the tank and all its tasks.'}
+              </p>
+            </div>
+            <Button 
+              variant="destructive" 
+              onClick={handleDeleteTank} 
+              disabled={deletingTank}
+              className="bg-red-600 hover:bg-red-700 shrink-0 shadow-sm"
+            >
+              {deletingTank ? <Loader2 className="animate-spin h-4 w-4" /> : <Trash2 className="h-4 w-4 mr-2" />}
+              {t('delete_tank')}
+            </Button>
+          </div>
         </div>
 
       </div>

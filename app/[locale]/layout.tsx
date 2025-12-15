@@ -2,12 +2,13 @@ import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
+import { Toaster } from "@/components/ui/sonner"; // WICHTIG: Import
 import "../globals.css";
 
-// 1. Schriftart laden (Sieht deutlich moderner aus als Standard-Schrift)
+// 1. Schriftart laden
 const inter = Inter({ subsets: ['latin'] });
 
-// 2. Professionelle Metadaten für SEO und Link-Vorschau (Reddit/WhatsApp)
+// 2. Metadaten
 export const metadata: Metadata = {
   title: {
     template: '%s | TankSitter',
@@ -17,16 +18,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'TankSitter',
     description: 'Keine toten Fische nach dem Urlaub. Erstelle einen visuellen Guide in Sekunden.',
-    url: 'https://tanksitter.app', // Falls du später eine Domain hast, hier anpassen
+    url: 'https://tanksitter.vercel.app', 
     siteName: 'TankSitter',
     type: 'website',
     locale: 'de_DE',
   },
-  // Hier könntest du später Icons hinzufügen, wenn du sie generiert hast
-  // icons: {
-  //   icon: '/favicon.ico',
-  //   apple: '/apple-touch-icon.png',
-  // }
 };
 
 export default async function LocaleLayout({
@@ -46,7 +42,12 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={inter.className}>
         <NextIntlClientProvider messages={messages}>
+          
           {children}
+          
+          {/* Toaster für Notifications (Sonner) */}
+          <Toaster position="top-center" richColors />
+
         </NextIntlClientProvider>
       </body>
     </html>

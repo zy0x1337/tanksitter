@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from "sonner" // Import
 
 export default function NewTankPage() {
   const t = useTranslations('Forms')
@@ -42,9 +43,10 @@ export default function NewTankPage() {
       })
 
     if (error) {
-      alert('Error: ' + error.message)
+      toast.error('Error: ' + error.message)
       setLoading(false)
     } else {
+      toast.success('Tank created successfully! 🐠')
       router.push(`/${locale}/dashboard`)
       router.refresh()
     }
