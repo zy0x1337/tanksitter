@@ -1,37 +1,33 @@
 'use client'
 
 import { useLocale } from 'next-intl'
-import { usePathname, useRouter } from 'next/navigation' // Achtung: next/navigation, nicht next-intl/navigation bei App Router oft tricky
-import { ChangeEvent, useTransition } from 'react'
-import { Button } from '@/components/ui/button'
+import { usePathname, useRouter } from '@/navigation' // WICHTIG: Import aus deiner navigation.ts
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useTransition } from 'react'
 
-export default function LanguageSwitcher() {
+export function LanguageSwitcher() {
   const locale = useLocale()
   const router = useRouter()
   const pathname = usePathname()
   const [isPending, startTransition] = useTransition()
 
-  const toggleLanguage = () => {
-    const nextLocale = locale === 'de' ? 'en' : 'de'
-    
-    // Pfad manipulieren: /de/dashboard -> /en/dashboard
-    // Wir ersetzen einfach das erste Segment
-    const newPath = pathname.replace(`/${locale}`, `/${nextLocale}`)
-    
+  const handleCreate = (newLocale: string) => {
     startTransition(() => {
-      router.replace(newPath)
+      // router.replace tauscht das Locale im aktuellen Pfad aus
+      router.replace(pathname, { locale: newLocale })
+      router.refresh() // Optional: Erzwingt Server-Refresh für frische Daten
     })
   }
 
   return (
-    <Button 
-      variant="ghost" 
-      size="sm" 
-      onClick={toggleLanguage}
-      disabled={isPending}
-      className="font-semibold text-gray-500 hover:text-blue-600"
-    >
-      {locale === 'de' ? 'EN' : 'DE'}
-    </Button>
+    <Select defaultValue={locale} onValueChange={handleCreate} disabled={isPending}>
+      <SelectTrigger className="w-[140px] bg-background/50 backdrop-blur-sm border-muted">
+        <SelectValue placeholder="Sprache" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="de">🇩🇪 Deutsch</SelectItem>
+        <SelectItem value="en">🇺🇸 English</SelectItem>
+      </SelectContent>
+    </Select>
   )
 }

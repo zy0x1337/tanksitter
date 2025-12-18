@@ -2,6 +2,10 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function updateSession(request: NextRequest, response: NextResponse) {
+  // Wir starten mit der Response, die wir von der Intl-Middleware erhalten haben.
+  // Das ist entscheidend, damit Redirects/Rewrites von next-intl erhalten bleiben.
+  let supabaseResponse = response
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -11,39 +15,54 @@ export async function updateSession(request: NextRequest, response: NextResponse
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          // WICHTIG: Wir setzen die Cookies auf der Response, 
-          // die wir von next-intl bekommen haben!
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
-          response = NextResponse.next({
-            request,
-          })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
+          // 1. Cookies im Request aktualisieren (für Server Components in diesem Render-Cycle)
+          cookiesToSet.forEach(({ name, value }) => 
+            request.cookies.set(name, value)
+          )
+          
+          // 2. Cookies in der Response setzen (für den Client)
+          // Wir klonen die Response nicht neu mit NextResponse.next(), 
+          // weil wir sonst Header/Status der ursprünglichen 'response' verlieren könnten.
+          cookiesToSet.forEach(({ name, value, options }) => 
+            supabaseResponse.cookies.set(name, value, options)
           )
         },
       },
     }
   )
 
-  // Session aktualisieren (wichtig für Server Components)
-  const { data: { user } } = await supabase.auth.getUser()
+  // WICHTIG: getUser() statt getSession() verwenden.
+  // getUser validiert das Auth-Token sicher gegen die Datenbank.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  // AUTH GUARD: Schütze alles unter /dashboard
-  // Wir prüfen auf den Pfad OHNE Locale-Prefix, da next-intl das manchmal schon handhabt,
-  // aber sicherheitshalber prüfen wir den rohen Pfad.
-  const path = request.nextUrl.pathname
-
-  // Einfache Prüfung: Enthält der Pfad "/dashboard"?
-  if (path.includes('/dashboard') && !user) {
-    // Redirect zur Login-Seite, aber wir müssen die Locale beibehalten
-    // Wir holen uns die Locale aus dem Pfad (z.B. /de/dashboard -> de)
-    const locale = path.split('/')[1] || 'en'
+  // --- Protected Routes Logik ---
+  
+  // Prüfen, ob der User auf einer geschützten Route ist
+  // Passe diesen Pfad an deine Struktur an (z.B. /dashboard)
+  if (request.nextUrl.pathname.includes('/dashboard') && !user) {
+    // Wenn kein User da ist, Redirect zum Login.
+    // Wir müssen hier das Locale berücksichtigen, falls es im Pfad ist.
+    // Einfacher Fix: Wir nehmen das erste Segment als Locale an oder fallbacken auf 'en'.
+    const locale = request.nextUrl.pathname.split('/')[1] || 'en'
     
-    // Redirect URL bauen
+    // Wir erstellen eine NEUE Redirect-Response, da der Zugriff verweigert wird.
     const url = request.nextUrl.clone()
     url.pathname = `/${locale}/login`
     return NextResponse.redirect(url)
   }
 
-  return response
+  // --- Auth Pages Logik (Optional) ---
+
+  // Wenn User eingeloggt ist und auf Login/Register zugreift, weiterleiten zum Dashboard
+  if ((request.nextUrl.pathname.includes('/login') || request.nextUrl.pathname.includes('/register')) && user) {
+    const locale = request.nextUrl.pathname.split('/')[1] || 'en'
+    const url = request.nextUrl.clone()
+    url.pathname = `/${locale}/dashboard`
+    return NextResponse.redirect(url)
+  }
+
+  // Gib die ursprüngliche (ggf. modifizierte) Response zurück
+  return supabaseResponse
 }
