@@ -5,7 +5,8 @@ import { getTranslations } from 'next-intl/server'
 import { Plus, Settings, QrCode } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ShareDialog } from '@/components/share-dialog'
-import { ModeToggle } from '@/components/mode-toggle' // Import Toggle
+import { ModeToggle } from '@/components/mode-toggle'
+import { InstallPrompt } from '@/components/install-prompt'
 
 export default async function Dashboard({
   params
@@ -16,9 +17,15 @@ export default async function Dashboard({
   const t = await getTranslations('Dashboard')
   const supabase = await createClient()
 
-  // Auth Check
+  // Wir holen den User. Die Middleware hat bereits geprüft, ob eine Session existiert.
+  // Dennoch ist es guter Stil, hier user abzurufen, um seine ID/Email zu nutzen.
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect(`/${locale}/login`)
+
+  // Typescript-Guard: Sollte dank Middleware nie eintreten, 
+  // aber wir brauchen user als Non-Nullable für die Query unten.
+  if (!user) {
+    redirect(`/${locale}/login`) 
+  }
 
   // Daten laden
   const { data: tanks } = await supabase
@@ -55,7 +62,7 @@ export default async function Dashboard({
             {tanks.map((tank) => (
               <div key={tank.id} className="bg-card text-card-foreground rounded-2xl p-6 shadow-sm border border-border hover:shadow-md transition-all group relative overflow-hidden">
                 
-                {/* Deko Background (angepasst für Darkmode) */}
+                {/* Deko Background */}
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-50 to-transparent dark:from-blue-900/20 rounded-bl-full -mr-10 -mt-10 opacity-50 group-hover:opacity-100 transition-opacity" />
 
                 <div className="relative">
@@ -91,7 +98,7 @@ export default async function Dashboard({
         ) : (
           // Empty State
           <div className="text-center py-20 bg-card rounded-3xl border-2 border-dashed border-border">
-            <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="text-4xl grayscale opacity-50">🐠</span>
             </div>
             <h3 className="text-lg font-bold text-foreground mb-2">{t('no_tanks')}</h3>
@@ -107,6 +114,9 @@ export default async function Dashboard({
         )}
 
       </div>
+
+      <InstallPrompt />
+
     </div>
   )
 }
