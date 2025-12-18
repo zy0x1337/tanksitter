@@ -13,7 +13,7 @@ import {
   Heart,
   ArrowRight
 } from 'lucide-react'
-import LanguageSwitcher from '@/components/language-switcher'
+import { LanguageSwitcher } from '@/components/language-switcher'
 import { ModeToggle } from '@/components/mode-toggle'
 
 export default function IndexPage() {
