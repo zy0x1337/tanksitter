@@ -31,19 +31,19 @@
       "hint_finger": "Your sitter sees this 👇"
     }
   },
-  "Login": {
+    "Login": {
     "title": "Login",
     "subtitle": "Your Aquarium Sitter Guide",
-    "email_placeholder": "Email Address",
-    "button_send": "Send Magic Link",
-    "button_sending": "Sending...",
-    "magic_link_hint": "No password. Just click the link in your email.",
-    "success_title": "Email sent!",
-    "success_msg_1": "We sent a magic link to",
-    "success_msg_2": "",
-    "success_msg_3": "Click it to sign in.",
-    "spam_hint": "Didn't arrive? Please check your spam folder.",
-    "back_button": "Back to login"
+    "emailplaceholder": "Email Address",
+    "buttonsend": "Send Magic Link",
+    "buttonsending": "Sending...",
+    "magiclinkhint": "No password. Just click the link in your email.",
+    "successtitle": "Email sent!",
+    "successmsg1": "We sent a magic link to",
+    "successmsg2": "",
+    "successmsg3": "Click it to sign in.",
+    "spamhint": "Didn't arrive? Please check your spam folder.",
+    "backbutton": "Back to dashboard"
   },
   "Dashboard": {
     "welcome": "Welcome back, {email}!",

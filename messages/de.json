@@ -34,16 +34,16 @@
   "Login": {
     "title": "Anmelden",
     "subtitle": "Dein Aquarium-Sitter Guide",
-    "email_placeholder": "E-Mail Adresse",
-    "button_send": "Magic Link senden",
-    "button_sending": "Sendet...",
-    "magic_link_hint": "Kein Passwort. Einfach auf den Link in deiner E-Mail klicken.",
-    "success_title": "E-Mail versendet!",
-    "success_msg_1": "Wir haben einen magischen Link an",
-    "success_msg_2": "gesendet.",
-    "success_msg_3": "Klicke darauf, um dich anzumelden.",
-    "spam_hint": "Nicht angekommen? Prüfe bitte auch deinen Spam-Ordner.",
-    "back_button": "Zurück zur Eingabe"
+    "emailplaceholder": "E-Mail Adresse",
+    "buttonsend": "Magic Link senden",
+    "buttonsending": "Sendet...",
+    "magiclinkhint": "Kein Passwort. Einfach auf den Link in deiner E-Mail klicken.",
+    "successtitle": "E-Mail gesendet!",
+    "successmsg1": "Wir haben einen Magic Link an",
+    "successmsg2": "gesendet.",
+    "successmsg3": "Klicke darauf, um dich anzumelden.",
+    "spamhint": "Nicht angekommen? Bitte prüfe deinen Spam-Ordner.",
+    "backbutton": "Zurück zum Dashboard"
   },
   "Dashboard": {
     "welcome": "Willkommen zurück, {email}!",
