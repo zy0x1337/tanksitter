@@ -1,79 +1,69 @@
 'use client'
 
 import { useState } from 'react'
-import { useLocale, useTranslations } from 'next-intl'
-import { createClient } from '@/lib/supabase-client'
+import { createClient } from '@/lib/supabase-client' // Client, nicht Server!
+import { useTranslations, useLocale } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { MailCheck, Loader2 } from 'lucide-react'
-
-// Base-URL Helper
-function getBaseUrl() {
-  const envUrl = process.env.NEXT_PUBLIC_SITE_URL
-  if (envUrl) return envUrl.replace(/\/$/, '')
-  if (typeof window !== 'undefined') return window.location.origin
-  return 'https://tanksitter.vercel.app'
-}
+import { Label } from '@/components/ui/label'
+import { ArrowLeft, Loader2, Mail } from 'lucide-react'
+import Link from 'next/link'
+import { toast } from 'sonner'
 
 export default function LoginPage() {
   const t = useTranslations('Login')
   const locale = useLocale()
-  const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
   const supabase = createClient()
+  
+  const [email, setEmail] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSent, setIsSent] = useState(false)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
+    setIsLoading(true)
 
-    const baseUrl = getBaseUrl()
-    const redirectTo = `${baseUrl}/${locale}/auth/callback`
+    // Redirect URL muss absolut sein oder relativ zum Origin
+    const origin = window.location.origin
+    const redirectTo = `${origin}/${locale}/auth/callback`
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: redirectTo },
+      options: {
+        emailRedirectTo: redirectTo,
+      },
     })
 
-    setLoading(false)
+    setIsLoading(false)
 
     if (error) {
-      alert('Error: ' + error.message)
+      toast.error(error.message)
     } else {
-      setSuccess(true)
+      setIsSent(true)
+      toast.success(t('success_title'))
     }
   }
 
-  // Success-State
-  if (success) {
+  if (isSent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 p-4">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center space-y-6 animate-in fade-in zoom-in duration-300">
-          <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-4">
-            <MailCheck className="w-8 h-8" />
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-card rounded-3xl p-8 shadow-xl border border-border text-center animate-in zoom-in-95 duration-300">
+          <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Mail className="w-8 h-8" />
           </div>
-          
-          <h2 className="text-2xl font-bold text-slate-900">
-            {t('success_title')}
-          </h2>
-          
-          <div className="text-slate-600 leading-relaxed">
-            <p>
-              {t('success_msg_1')} <strong className="font-semibold text-slate-900">{email}</strong> {t('success_msg_2')}
-            </p>
-            <p className="mt-1">
-              {t('success_msg_3')}
-            </p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">{t('success_title')}</h2>
+          <p className="text-muted-foreground mb-6">
+            {t('success_msg_1')} <span className="font-bold text-foreground">{email}</span> {t('success_msg_2')}
+            <br />
+            {t('success_msg_3')}
+          </p>
+          <div className="bg-secondary/50 p-3 rounded-xl text-xs text-muted-foreground mb-6">
+            {t('spam_hint')}
           </div>
-
-          <div className="bg-slate-50 p-4 rounded-lg text-sm text-slate-500 border border-slate-100">
-            <p>{t('spam_hint')}</p>
-          </div>
-
           <Button 
             variant="outline" 
-            onClick={() => setSuccess(false)}
-            className="w-full mt-4"
+            onClick={() => setIsSent(false)}
+            className="w-full"
           >
             {t('back_button')}
           </Button>
@@ -82,43 +72,61 @@ export default function LoginPage() {
     )
   }
 
-  // Normales Formular
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 space-y-6">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">TankSitter</h1>
-          <p className="text-slate-500">{t('subtitle')}</p>
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      
+      {/* Background Blobs (Deko) */}
+      <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="w-full max-w-md relative z-10">
+        <Link href="/" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8 transition-colors">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back
+        </Link>
+
+        <div className="bg-card rounded-3xl shadow-2xl shadow-black/5 border border-border p-8 md:p-10">
+          <div className="text-center mb-8">
+            <span className="text-4xl mb-4 block">🐠</span>
+            <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
+            <p className="text-muted-foreground mt-2 text-sm">{t('subtitle')}</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="sr-only">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder={t('email_placeholder')}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={isLoading}
+                className="h-12 bg-background border-input text-lg px-4"
+              />
+            </div>
+
+            <Button 
+              type="submit" 
+              className="w-full h-12 text-lg bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  {t('button_sending')}
+                </>
+              ) : (
+                t('button_send')
+              )}
+            </Button>
+          </form>
+
+          <p className="text-xs text-center text-muted-foreground mt-6 px-4 leading-relaxed">
+            {t('magic_link_hint')}
+          </p>
         </div>
-
-        <form onSubmit={handleLogin} className="space-y-4">
-          <Input
-            type="email"
-            placeholder={t('email_placeholder')}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            autoComplete="email"
-            className="h-12 text-lg"
-          />
-          <Button 
-            type="submit" 
-            className="w-full h-12 text-lg font-medium bg-blue-600 hover:bg-blue-700 transition-all" 
-            disabled={loading}
-          >
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin" /> {t('button_sending')}
-              </span>
-            ) : (
-              t('button_send')
-            )}
-          </Button>
-        </form>
-
-        <p className="text-xs text-slate-400 text-center px-4">
-          {t('magic_link_hint')}
-        </p>
       </div>
     </div>
   )

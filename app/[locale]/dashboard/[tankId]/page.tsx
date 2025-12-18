@@ -185,15 +185,15 @@ export default function TankDetailPage({ params }: PageProps) {
                     <div>
                         <Label className="mb-1.5 block font-medium">{t('frequency_label')}</Label>
                         <Select value={newTaskFreq} onValueChange={setNewTaskFreq}>
-                            <SelectTrigger className="h-11 bg-background">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="daily">Daily / Täglich</SelectItem>
-                                <SelectItem value="weekly">Weekly / Wöchentlich</SelectItem>
-                                <SelectItem value="once">Once / Einmalig</SelectItem>
-                            </SelectContent>
-                        </Select>
+    <SelectTrigger className="h-11 bg-background">
+        <SelectValue />
+    </SelectTrigger>
+    <SelectContent>
+        <SelectItem value="daily">{t('freq_daily')}</SelectItem>
+        <SelectItem value="weekly">{t('freq_weekly')}</SelectItem>
+        <SelectItem value="once">{t('freq_once')}</SelectItem>
+    </SelectContent>
+</Select>
                     </div>
 
                     <div>

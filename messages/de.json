@@ -26,7 +26,7 @@
       "task_active_desc": "Nur einen halben Löffel! Wenn Wasser trüb, weglassen.",
       "photo_label": "Foto",
       "button_done": "Erledigt ✅",
-      "hint_finger": "Das sieht dein Sitter"
+      "hint_finger": "Das sieht dein Sitter 👇"
     }
   },
   "Login": {
@@ -57,6 +57,10 @@
     "todo_today_title": "Heute zu tun",
     "empty_title": "Alles erledigt! 🎉",
     "empty_desc": "Für heute stehen keine Aufgaben an.",
+    "intro_done": "Super Arbeit! Die Fische sind glücklich. Bis morgen! 🐟",
+    "intro_pending": "Bitte erledige diese Aufgaben, damit das Ökosystem stabil bleibt.",
+    "progress_text": "{done} / {total} Erledigt",
+    "footer_warning": "Wenn du unsicher bist, ruf an.",
     "task_frequency": {
       "daily": "Täglich",
       "weekly": "Wöchentlich",
@@ -82,9 +86,28 @@
     "task_title_label": "Titel",
     "task_title_placeholder": "z.B. Füttern",
     "frequency_label": "Wie oft?",
+    "freq_daily": "Täglich",
+    "freq_weekly": "Wöchentlich",
+    "freq_once": "Einmalig",
     "image_label": "Foto (Wichtig!)",
     "upload_hint": "Klicken oder Bild hierher ziehen",
     "delete_tank": "Becken löschen",
     "delete_confirm": "Wirklich löschen?"
+  },
+  "Share": {
+    "dialog_title": "Zugang teilen",
+    "dialog_desc": "Gib diesen Link oder QR-Code deinem Sitter. Er braucht keinen Account.",
+    "button_copy": "Kopieren",
+    "button_print": "Anleitung drucken (PDF)",
+    "scan_label": "Scan für Fotos & Details",
+    "scan_desc": "Öffnet die interaktive Ansicht mit Fotos.",
+    "pdf_title": "Aquarium Pflegeplan",
+    "pdf_important": "Wichtig:",
+    "pdf_note": "Im Zweifel immer WENIGER füttern. Fische verhungern nicht schnell, aber Futterreste vergiften das Wasser.",
+    "pdf_col_task": "Aufgabe",
+    "pdf_col_freq": "Intervall",
+    "pdf_col_done": "Erledigt",
+    "pdf_dummy_feed": "Füttern (Siehe App für Fotos)",
+    "pdf_dummy_check": "Technik-Check (Filter/Temp)"
   }
 }

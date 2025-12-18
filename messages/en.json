@@ -26,7 +26,7 @@
       "task_active_desc": "Just half a spoon! If water cloudy, skip.",
       "photo_label": "Photo",
       "button_done": "Done ✅",
-      "hint_finger": "Your sitter sees this"
+      "hint_finger": "Your sitter sees this 👇"
     }
   },
   "Login": {
@@ -57,6 +57,10 @@
     "todo_today_title": "To Do Today",
     "empty_title": "All done! 🎉",
     "empty_desc": "No tasks scheduled for today.",
+    "intro_done": "Great job! The fish are happy. See you tomorrow! 🐟",
+    "intro_pending": "Please complete these tasks to keep the ecosystem healthy.",
+    "progress_text": "{done} / {total} Done",
+    "footer_warning": "When in doubt, call me.",
     "task_frequency": {
       "daily": "Daily",
       "weekly": "Weekly",
@@ -82,9 +86,28 @@
     "task_title_label": "Title",
     "task_title_placeholder": "e.g. Feeding",
     "frequency_label": "Frequency",
+    "freq_daily": "Daily",
+    "freq_weekly": "Weekly",
+    "freq_once": "One-time",
     "image_label": "Photo (Important!)",
     "upload_hint": "Click or drag image here",
     "delete_tank": "Delete Tank",
     "delete_confirm": "Delete?"
+  },
+  "Share": {
+    "dialog_title": "Share Access",
+    "dialog_desc": "Give this link or QR code to your sitter. No login required.",
+    "button_copy": "Copy Link",
+    "button_print": "Print Instructions (PDF)",
+    "scan_label": "SCAN ME",
+    "scan_desc": "Scan for photos & details.",
+    "pdf_title": "Aquarium Care Guide",
+    "pdf_important": "Important:",
+    "pdf_note": "When in doubt, feed LESS. Fish don't starve easily, but leftover food kills the water.",
+    "pdf_col_task": "Task",
+    "pdf_col_freq": "Freq",
+    "pdf_col_done": "Done",
+    "pdf_dummy_feed": "Feeding (See App for photos)",
+    "pdf_dummy_check": "Tech Check (Filter/Temp)"
   }
 }
