@@ -31,7 +31,7 @@
       "hint_finger": "Your sitter sees this 👇"
     }
   },
-    "Login": {
+  "Login": {
     "title": "Login",
     "subtitle": "Your Aquarium Sitter Guide",
     "emailplaceholder": "Email Address",
@@ -54,6 +54,13 @@
     "manage_button": "Manage",
     "created_at": "Created on {date}"
   },
+  "Settings": {
+    "title": "Profile Settings",
+    "contact_info_title": "Emergency Contact Info",
+    "contact_info_desc": "This information will be displayed to your sitter in the 'Emergency' section.",
+    "save_button": "Save Changes",
+    "saved_success": "Profile updated successfully."
+  },
   "Sitter": {
     "emergency_button": "Report Emergency / Issue",
     "todo_today_title": "To Do Today",
@@ -73,6 +80,21 @@
       "done_status": "Done for today ✅",
       "no_description": "No description. See photo.",
       "image_alt": "Task photo"
+    }
+  },
+  "SitterView": {
+    "header_subtitle": "Aquarium Sitter View",
+    "tasks_title": "Tasks for Today",
+    "no_tasks": "No tasks pending.",
+    "mark_done_button": "Mark as Done",
+    "photo_label": "Reference Photo",
+    "no_description": "No description provided.",
+    "emergency": {
+      "title": "Emergency Contact",
+      "subtitle": "If something looks wrong or isn't working:",
+      "call_button": "Call Owner",
+      "whatsapp_action": "Send Message",
+      "notes_label": "Important Notes"
     }
   },
   "Forms": {

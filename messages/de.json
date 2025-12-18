@@ -54,6 +54,13 @@
     "manage_button": "Verwalten",
     "created_at": "Erstellt am {date}"
   },
+  "Settings": {
+    "title": "Profil Einstellungen",
+    "contact_info_title": "Notfall Kontakt-Infos",
+    "contact_info_desc": "Diese Informationen werden deinem Sitter im 'Notfall'-Bereich angezeigt.",
+    "save_button": "Speichern",
+    "saved_success": "Profil erfolgreich aktualisiert."
+  },
   "Sitter": {
     "emergency_button": "Notfall / Problem melden",
     "todo_today_title": "Heute zu tun",
@@ -73,6 +80,22 @@
       "done_status": "Erledigt für heute ✅",
       "no_description": "Keine Beschreibung. Siehe Foto.",
       "image_alt": "Foto der Aufgabe"
+    }
+  },
+  "SitterView": {
+    "header_subtitle": "Aquarium Sitter View",
+    "tasks_title": "Aufgaben für heute",
+    "no_tasks": "Keine Aufgaben offen.",
+    "mark_done_button": "Erledigt",
+    "photo_label": "Referenz-Foto",
+    "no_description": "Keine weitere Beschreibung.",
+    "emergency": {
+      "title": "Notfall Kontakt",
+      "subtitle": "Falls etwas komisch aussieht oder nicht funktioniert:",
+      "call_button": "Anrufen",
+      "whatsapp_action": "Nachricht schreiben",
+      "notes_label": "Wichtige Hinweise",
+      "notes_desc": ""
     }
   },
   "Forms": {
