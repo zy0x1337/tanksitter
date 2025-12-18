@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
-import { Plus, Settings, QrCode } from 'lucide-react'
+import { Plus, Settings, QrCode, UserCog } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ShareDialog } from '@/components/share-dialog'
 import { ModeToggle } from '@/components/mode-toggle'
@@ -17,17 +17,14 @@ export default async function Dashboard({
   const t = await getTranslations('Dashboard')
   const supabase = await createClient()
 
-  // Wir holen den User. Die Middleware hat bereits geprüft, ob eine Session existiert.
-  // Dennoch ist es guter Stil, hier user abzurufen, um seine ID/Email zu nutzen.
+  // User abrufen
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Typescript-Guard: Sollte dank Middleware nie eintreten, 
-  // aber wir brauchen user als Non-Nullable für die Query unten.
   if (!user) {
     redirect(`/${locale}/login`) 
   }
 
-  // Daten laden
+  // Tanks laden
   const { data: tanks } = await supabase
     .from('tanks')
     .select('*')
@@ -39,7 +36,7 @@ export default async function Dashboard({
       <div className="max-w-5xl mx-auto space-y-8">
         
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-foreground">{t('your_tanks')}</h1>
             <p className="text-muted-foreground text-sm mt-1">{user.email}</p>
@@ -47,6 +44,14 @@ export default async function Dashboard({
           
           <div className="flex items-center gap-3">
              <ModeToggle />
+             
+             {/* Profile / Settings Button */}
+             <Link href={`/${locale}/dashboard/settings`}>
+                <Button variant="outline" size="icon" title="Settings">
+                  <UserCog className="w-4 h-4" />
+                </Button>
+             </Link>
+
              <Link href={`/${locale}/dashboard/new`}>
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20 rounded-xl">
                   <Plus className="w-4 h-4 mr-2" />
@@ -89,7 +94,6 @@ export default async function Dashboard({
                         </Button>
                       }
                     />
-
                   </div>
                 </div>
               </div>
