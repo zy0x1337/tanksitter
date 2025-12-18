@@ -11,11 +11,13 @@
     },
     "trust_badges": {
       "photo_title": "Foto-Tasks",
-      "photo_desc": "Statt langer Texte",
+      "photo_desc": "Bilder statt langer Texte",
       "qr_title": "QR Zugang",
-      "qr_desc": "Kein Login nötig",
+      "qr_desc": "Kein Login für den Sitter",
       "free_title": "100% Kostenlos",
-      "free_desc": "Für Hobbyisten"
+      "free_desc": "Open Source für Hobbyisten",
+      "security_title": "Datenschutz",
+      "security_desc": "Kein Tracking. Deine Daten bleiben privat."
     },
     "mockup": {
       "view_title": "Sitter Ansicht",

@@ -10,12 +10,14 @@
       "mobile": "Works on any mobile"
     },
     "trust_badges": {
-      "photo_title": "Photo Tasks",
-      "photo_desc": "Instead of text walls",
+      "photo_title": "Visual Tasks",
+      "photo_desc": "Images instead of text walls",
       "qr_title": "QR Access",
-      "qr_desc": "No login needed",
+      "qr_desc": "No login needed for sitters",
       "free_title": "100% Free",
-      "free_desc": "For hobbyists"
+      "free_desc": "Open source for hobbyists",
+      "security_title": "Privacy First",
+      "security_desc": "No tracking. Your data stays private."
     },
     "mockup": {
       "view_title": "Sitter View",

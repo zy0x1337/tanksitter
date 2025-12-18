@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase-client' // Client, nicht Server!
+import { createClient } from '@/lib/supabase-client'
 import { useTranslations, useLocale } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { ArrowLeft, Loader2, Mail } from 'lucide-react'
+import { ArrowLeft, Loader2, Mail, Fish } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
@@ -23,7 +23,6 @@ export default function LoginPage() {
     e.preventDefault()
     setIsLoading(true)
 
-    // Redirect URL muss absolut sein oder relativ zum Origin
     const origin = window.location.origin
     const redirectTo = `${origin}/${locale}/auth/callback`
 
@@ -82,12 +81,14 @@ export default function LoginPage() {
       <div className="w-full max-w-md relative z-10">
         <Link href="/" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8 transition-colors">
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back
+          {t('back_button')}
         </Link>
 
         <div className="bg-card rounded-3xl shadow-2xl shadow-black/5 border border-border p-8 md:p-10">
-          <div className="text-center mb-8">
-            <span className="text-4xl mb-4 block">🐠</span>
+          <div className="flex flex-col items-center text-center mb-8">
+            <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center mb-4">
+               <Fish className="w-8 h-8" strokeWidth={1.5} />
+            </div>
             <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
             <p className="text-muted-foreground mt-2 text-sm">{t('subtitle')}</p>
           </div>

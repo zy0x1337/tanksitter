@@ -42,46 +42,47 @@
 
 /* 
   FARBPALETTE - "Cozy Aquarium"
-  Wir nutzen HSL Werte für maximale Kontrolle.
+  Extra warmes Creme für Light Mode
+  Tiefes, warmes Schwarz für Dark Mode
 */
 :root {
-  /* LIGHT MODE: "Warm Paper" (Stone-50 Basis) */
-  --background: 40 20% 98%;      /* #fdfbf7 - Ein Hauch von Creme */
-  --foreground: 24 10% 10%;      /* #1c1917 - Fast Schwarz, aber warm */
+  /* LIGHT MODE: "Warm Paper" (Creme/Beige) */
+  --background: 35 30% 96%;      /* #fdf8f2 - Deutliches, warmes Creme */
+  --foreground: 20 14% 10%;      /* #1c1917 - Warmes Tiefschwarz */
 
-  /* Cards schweben als reines Weiß auf dem cremigen Hintergrund */
+  /* Cards bleiben reinweiß für Kontrast */
   --card: 0 0% 100%;             /* #ffffff */
-  --card-foreground: 24 10% 10%;
+  --card-foreground: 20 14% 10%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 24 10% 10%;
+  --popover-foreground: 20 14% 10%;
 
-  /* Primary: "Deep Ocean Blue" - Vertrauen & Wasser */
-  --primary: 215 90% 48%;        /* #0b6bcb - Kräftig, klar, professionell */
+  /* Primary: "Deep Ocean Blue" - Wirkt edel auf Beige */
+  --primary: 215 90% 48%;        /* #0b6bcb */
   --primary-foreground: 210 40% 98%;
 
-  /* Secondary: Sanftes Grau-Beige für dezente Buttons */
-  --secondary: 40 10% 94%;       /* #f0ede8 */
+  /* Secondary: Dunkleres Beige (Latte Macchiato Schaum) */
+  --secondary: 35 20% 90%;       /* #efebe6 */
   --secondary-foreground: 24 10% 10%;
 
-  /* Muted: Für unwichtige Texte */
-  --muted: 40 10% 94%;
-  --muted-foreground: 24 5% 45%;
+  /* Muted */
+  --muted: 35 20% 90%;
+  --muted-foreground: 25 5% 45%;
 
-  /* Accent: Hover-Effekte (leicht dunkler als Background) */
-  --accent: 40 10% 92%;          /* #ebe8e3 */
+  /* Accent: Hover-Effekte */
+  --accent: 35 20% 88%;          /* #e8e3dc */
   --accent-foreground: 24 10% 10%;
 
-  /* Destructive: "Coral Red" - nicht zu aggressiv */
+  /* Destructive */
   --destructive: 0 75% 55%;
   --destructive-foreground: 210 40% 98%;
 
-  /* Borders: Sehr subtil, fast unsichtbar */
-  --border: 40 10% 90%;          /* #e6e3de */
-  --input: 40 10% 90%;
-  --ring: 215 90% 48%;           /* Focus Ring = Primary */
+  /* Borders: Warmes Grau-Beige */
+  --border: 35 15% 85%;          /* #dedbd6 */
+  --input: 35 15% 85%;
+  --ring: 215 90% 48%;
 
-  --radius: 1rem;                /* Runde Ecken für den Friendly-Look */
+  --radius: 1rem;
 }
 
 .dark {
@@ -89,43 +90,39 @@
   --background: 24 10% 4%;       /* #0b0a09 - Sehr tiefes, warmes Schwarz */
   --foreground: 40 20% 96%;      /* #fdfbf7 - Helles Creme als Text */
 
-  /* Cards sind etwas heller als Background, um Tiefe zu erzeugen */
+  /* Cards etwas heller */
   --card: 24 6% 8%;              /* #141312 */
   --card-foreground: 40 20% 96%;
 
   --popover: 24 6% 8%;
   --popover-foreground: 40 20% 96%;
 
-  /* Primary: Etwas heller im Darkmode für Lesbarkeit ("Glow") */
-  --primary: 215 90% 58%;        /* #3b82f6 - Helleres Blau */
+  /* Primary: Helleres Blau für Glow */
+  --primary: 215 90% 58%;        /* #3b82f6 */
   --primary-foreground: 0 0% 100%;
 
-  /* Secondary: Dunkles Grau-Braun */
+  /* Secondary */
   --secondary: 24 5% 14%;        /* #242322 */
   --secondary-foreground: 40 20% 96%;
 
   /* Muted */
   --muted: 24 5% 14%;
-  --muted-foreground: 24 5% 60%; /* Stone-400 */
+  --muted-foreground: 24 5% 60%;
 
-  /* Accent: Hover im Darkmode */
+  /* Accent */
   --accent: 24 5% 18%;           /* #2e2d2b */
   --accent-foreground: 40 20% 96%;
 
   /* Destructive */
-  --destructive: 0 60% 40%;      /* Dunkleres Rot */
+  --destructive: 0 60% 40%;
   --destructive-foreground: 0 0% 98%;
 
-  /* Borders: Fast unsichtbar dunkel */
+  /* Borders */
   --border: 24 5% 14%;
   --input: 24 5% 14%;
   --ring: 215 90% 58%;
 }
 
-/* 
-  Global Styles 
-  In v4 nutzen wir @layer base für globale Resets
-*/
 @layer base {
   * {
     border-color: var(--border);
