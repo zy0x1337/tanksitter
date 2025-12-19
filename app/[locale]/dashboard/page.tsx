@@ -78,11 +78,14 @@ export default async function Dashboard({
 
                   <div className="flex gap-2">
                     <Link href={`/${locale}/dashboard/${tank.id}`} className="flex-1">
-                      <Button variant="outline" className="w-full justify-between group-hover:border-blue-200 dark:group-hover:border-blue-800">
-                        {t('manage_button')}
-                        <Settings className="w-4 h-4 text-muted-foreground" />
-                      </Button>
-                    </Link>
+  <Button 
+    variant="outline" 
+    className="w-full justify-between border-border hover:border-blue-300 dark:hover:border-blue-700 hover:bg-secondary/50 transition-colors"
+  >
+    {t('manage_button')}
+    <Settings className="w-4 h-4 text-muted-foreground" />
+  </Button>
+</Link>
                     
                     {/* Share Dialog Button */}
                     <ShareDialog 
