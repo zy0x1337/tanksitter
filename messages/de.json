@@ -41,9 +41,9 @@
     "button_sending": "Sendet...",
     "magic_link_hint": "Kein Passwort. Einfach auf den Link in deiner E-Mail klicken.",
     "success_title": "E-Mail gesendet!",
-    "success_msg1": "Wir haben einen Magic Link an",
-    "success_msg2": "gesendet.",
-    "success_msg3": "Klicke darauf, um dich anzumelden.",
+    "success_msg_1": "Wir haben einen Magic Link an",
+    "success_msg_2": "gesendet.",
+    "success_msg_3": "Klicke darauf, um dich anzumelden.",
     "spam_hint": "Nicht angekommen? Bitte prüfe deinen Spam-Ordner.",
     "back_button": "Zurück zum Dashboard"
   },

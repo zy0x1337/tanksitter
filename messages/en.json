@@ -41,9 +41,9 @@
     "button_sending": "Sending...",
     "magic_link_hint": "No password. Just click the link in your email.",
     "success_title": "Email sent!",
-    "success_msg1": "We sent a magic link to",
-    "success_msg2": "",
-    "success_msg3": "Click it to sign in.",
+    "success_msg_1": "We sent a magic link to",
+    "success_msg_2": "",
+    "success_msg_3": "Click it to sign in.",
     "spam_hint": "Didn't arrive? Please check your spam folder.",
     "back_button": "Back to dashboard"
   },
