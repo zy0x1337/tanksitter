@@ -55,12 +55,14 @@
     "manage_button": "Verwalten",
     "created_at": "Erstellt am {date}"
   },
-  "Settings": {
+    "Settings": {
     "title": "Profil Einstellungen",
     "contact_info_title": "Notfall Kontakt-Infos",
     "contact_info_desc": "Diese Informationen werden deinem Sitter im 'Notfall'-Bereich angezeigt.",
     "save_button": "Speichern",
-    "saved_success": "Profil erfolgreich aktualisiert."
+    "saved_success": "Profil erfolgreich aktualisiert.",
+    "settings_tooltip": "Profil bearbeiten",
+    "back_to_dashboard": "Zurück zum Dashboard"
   },
   "Sitter": {
     "emergency_button": "Notfall / Problem melden",

@@ -60,7 +60,9 @@
     "contact_info_title": "Emergency Contact Info",
     "contact_info_desc": "This information will be displayed to your sitter in the 'Emergency' section.",
     "save_button": "Save Changes",
-    "saved_success": "Profile updated successfully."
+    "saved_success": "Profile updated successfully.",
+    "settings_tooltip": "Edit Profile",
+    "back_to_dashboard": "Back to Dashboard"
   },
   "Sitter": {
     "emergency_button": "Report Emergency / Issue",
