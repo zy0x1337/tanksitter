@@ -85,7 +85,7 @@ export default async function IndexPage({
             {user ? (
                <Link href={`/${locale}/dashboard`} className="w-full sm:w-auto">
                  <Button size="lg" className="w-full h-14 text-lg bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-500/20 rounded-2xl group">
-                   Zum Dashboard
+                   {t('to_dashboard')}
                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                  </Button>
                </Link>
