@@ -178,5 +178,20 @@
       "rights_title": "5. Ihre Rechte",
       "rights_text": "Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung sowie ein Recht auf Berichtigung, Sperrung oder Löschung dieser Daten."
     }
+  },
+    "Presets": {
+    "title": "Schnellwahl",
+    "feed_fish": "Fische füttern",
+    "feed_shrimp": "Garnelen füttern",
+    "water_change": "Wasserwechsel",
+    "fertilizer": "Düngen",
+    "check_tech": "Technik-Check",
+    "test_water": "Wassertest",
+    "desc_feed_fish": "Nur eine kleine Prise. Nicht überfüttern!",
+    "desc_feed_shrimp": "1 Stick/Pellet. Reste nach 2h entfernen.",
+    "desc_water_change": "30% Wechsel. Wasseraufbereiter nutzen.",
+    "desc_fertilizer": "Flüssigdünger nach Anleitung zugeben.",
+    "desc_check_tech": "Filter, Heizer und CO2 prüfen.",
+    "desc_test_water": "Teststreifen oder Dropchecker prüfen."
   }
 }
