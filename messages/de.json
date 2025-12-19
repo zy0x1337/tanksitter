@@ -11,6 +11,7 @@
       "mobile": "Funktioniert auf jedem Handy"
     },
     "trust_badges": {
+      "features_headline": "Warum TankSitter?",
       "photo_title": "Foto-Tasks",
       "photo_desc": "Bilder statt langer Texte",
       "qr_title": "QR Zugang",
@@ -35,16 +36,16 @@
   "Login": {
     "title": "Anmelden",
     "subtitle": "Dein Aquarium-Sitter Guide",
-    "emailplaceholder": "E-Mail Adresse",
-    "buttonsend": "Magic Link senden",
-    "buttonsending": "Sendet...",
-    "magiclinkhint": "Kein Passwort. Einfach auf den Link in deiner E-Mail klicken.",
-    "successtitle": "E-Mail gesendet!",
-    "successmsg1": "Wir haben einen Magic Link an",
-    "successmsg2": "gesendet.",
-    "successmsg3": "Klicke darauf, um dich anzumelden.",
-    "spamhint": "Nicht angekommen? Bitte prüfe deinen Spam-Ordner.",
-    "backbutton": "Zurück zum Dashboard"
+    "email_placeholder": "E-Mail Adresse",
+    "button_send": "Magic Link senden",
+    "button_sending": "Sendet...",
+    "magic_link_hint": "Kein Passwort. Einfach auf den Link in deiner E-Mail klicken.",
+    "success_title": "E-Mail gesendet!",
+    "success_msg1": "Wir haben einen Magic Link an",
+    "success_msg2": "gesendet.",
+    "success_msg3": "Klicke darauf, um dich anzumelden.",
+    "spam_hint": "Nicht angekommen? Bitte prüfe deinen Spam-Ordner.",
+    "back_button": "Zurück zum Dashboard"
   },
   "Dashboard": {
     "welcome": "Willkommen zurück, {email}!",
@@ -55,7 +56,7 @@
     "manage_button": "Verwalten",
     "created_at": "Erstellt am {date}"
   },
-    "Settings": {
+  "Settings": {
     "title": "Profil Einstellungen",
     "contact_info_title": "Notfall Kontakt-Infos",
     "contact_info_desc": "Diese Informationen werden deinem Sitter im 'Notfall'-Bereich angezeigt.",
@@ -104,8 +105,7 @@
       "subtitle": "Falls etwas komisch aussieht oder nicht funktioniert:",
       "call_button": "Anrufen",
       "whatsapp_action": "Nachricht schreiben",
-      "notes_label": "Wichtige Hinweise",
-      "notes_desc": ""
+      "notes_label": "Wichtige Hinweise"
     }
   },
   "Forms": {
@@ -144,5 +144,39 @@
     "pdf_col_done": "Erledigt",
     "pdf_dummy_feed": "Füttern (Siehe App für Fotos)",
     "pdf_dummy_check": "Technik-Check (Filter/Temp)"
+  },
+  "Legal": {
+    "imprint_title": "Impressum",
+    "imprint_subtitle": "Rechtliche Angaben",
+    "privacy_title": "Datenschutzerklärung",
+    "privacy_subtitle": "Erklärung zur Datennutzung",
+    "last_updated": "Stand: Dezember 2025",
+    "back_home": "Zurück zur Startseite",
+    "contact": "Kontakt",
+    "questions": "Fragen? Schreib uns:",
+    "imprint": {
+      "section1_title": "Angaben gemäß § 5 TMG",
+      "section2_title": "Kontakt",
+      "section3_title": "Verantwortlich für den Inhalt",
+      "section3_subtitle": "nach § 55 Abs. 2 RStV",
+      "disclaimer_text": "Plattform der EU-Kommission zur Online-Streitbeilegung: https://ec.europa.eu/consumers/odr. Wir sind zur Teilnahme an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle weder verpflichtet noch bereit."
+    },
+    "privacy": {
+      "gen_title": "1. Allgemeines",
+      "gen_text": "Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.",
+      "hosting_title": "2. Hosting & Backend",
+      "vercel_text": "Diese Website wird bei Vercel gehostet. Vercel erhebt Logfiles (IP-Adressen) aus Sicherheits- und Performancegründen.",
+      "supabase_text": "Wir nutzen Supabase für Authentifizierung und Datenbankdienste. Wenn Sie sich anmelden (Magic Link), wird Ihre E-Mail-Adresse in unserer Datenbank bei Supabase gespeichert.",
+      "data_title": "3. Datenerfassung",
+      "data_account": "Account Daten:",
+      "data_account_text": "Wir speichern nur Ihre E-Mail-Adresse zur Kontoerstellung. Wir speichern keine Passwörter.",
+      "data_usage": "Nutzungsdaten:",
+      "data_usage_text": "Wir speichern die Namen Ihrer Becken, Aufgaben und hochgeladene Bilder.",
+      "img_title": "4. Bilder",
+      "img_note": "Wichtiger Hinweis:",
+      "img_text": "Hochgeladene Bilder werden in einem öffentlichen Speicher (Bucket) abgelegt, damit Ihr Sitter sie ohne Login sehen kann. Bitte laden Sie keine sensiblen persönlichen Daten auf diesen Bildern hoch.",
+      "rights_title": "5. Ihre Rechte",
+      "rights_text": "Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung sowie ein Recht auf Berichtigung, Sperrung oder Löschung dieser Daten."
+    }
   }
 }

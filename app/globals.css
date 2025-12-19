@@ -1,134 +1,129 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* Plugin für Dark Mode Support in v4 */
-@custom-variant dark (&:is(.dark *));
+/* Dark Mode Aktivierung via Klasse */
+@custom-variant dark (&:where(.dark, .dark *));
 
+/* Theme Variablen Mapping */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
-  
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
-  
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-  
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
-  
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
-  
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-
-  /* Radius */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* 
-  FARBPALETTE - "Cozy Aquarium"
-  Extra warmes Creme für Light Mode
-  Tiefes, warmes Schwarz für Dark Mode
-*/
-:root {
-  /* LIGHT MODE: "Warm Paper" (Creme/Beige) */
-  --background: 35 30% 96%;      /* #fdf8f2 - Deutliches, warmes Creme */
-  --foreground: 20 14% 10%;      /* #1c1917 - Warmes Tiefschwarz */
-
-  /* Cards bleiben reinweiß für Kontrast */
-  --card: 0 0% 100%;             /* #ffffff */
-  --card-foreground: 20 14% 10%;
-
-  --popover: 0 0% 100%;
-  --popover-foreground: 20 14% 10%;
-
-  /* Primary: "Deep Ocean Blue" - Wirkt edel auf Beige */
-  --primary: 215 90% 48%;        /* #0b6bcb */
-  --primary-foreground: 210 40% 98%;
-
-  /* Secondary: Dunkleres Beige (Latte Macchiato Schaum) */
-  --secondary: 35 20% 90%;       /* #efebe6 */
-  --secondary-foreground: 24 10% 10%;
-
-  /* Muted */
-  --muted: 35 20% 90%;
-  --muted-foreground: 25 5% 45%;
-
-  /* Accent: Hover-Effekte */
-  --accent: 35 20% 88%;          /* #e8e3dc */
-  --accent-foreground: 24 10% 10%;
-
-  /* Destructive */
-  --destructive: 0 75% 55%;
-  --destructive-foreground: 210 40% 98%;
-
-  /* Borders: Warmes Grau-Beige */
-  --border: 35 15% 85%;          /* #dedbd6 */
-  --input: 35 15% 85%;
-  --ring: 215 90% 48%;
-
-  --radius: 1rem;
-}
-
-.dark {
-  /* DARK MODE: "Deep Sea" (Stone-950 Basis) */
-  --background: 24 10% 4%;       /* #0b0a09 - Sehr tiefes, warmes Schwarz */
-  --foreground: 40 20% 96%;      /* #fdfbf7 - Helles Creme als Text */
-
-  /* Cards etwas heller */
-  --card: 24 6% 8%;              /* #141312 */
-  --card-foreground: 40 20% 96%;
-
-  --popover: 24 6% 8%;
-  --popover-foreground: 40 20% 96%;
-
-  /* Primary: Helleres Blau für Glow */
-  --primary: 215 90% 58%;        /* #3b82f6 */
-  --primary-foreground: 0 0% 100%;
-
-  /* Secondary */
-  --secondary: 24 5% 14%;        /* #242322 */
-  --secondary-foreground: 40 20% 96%;
-
-  /* Muted */
-  --muted: 24 5% 14%;
-  --muted-foreground: 24 5% 60%;
-
-  /* Accent */
-  --accent: 24 5% 18%;           /* #2e2d2b */
-  --accent-foreground: 40 20% 96%;
-
-  /* Destructive */
-  --destructive: 0 60% 40%;
-  --destructive-foreground: 0 0% 98%;
-
-  /* Borders */
-  --border: 24 5% 14%;
-  --input: 24 5% 14%;
-  --ring: 215 90% 58%;
-}
-
 @layer base {
+  :root {
+    color-scheme: light;
+    
+    /* LIGHT MODE - Mit Kommas für Sicherheit */
+    --background: hsl(35, 30%, 96%);
+    --foreground: hsl(20, 14%, 10%);
+
+    --card: hsl(0, 0%, 100%);
+    --card-foreground: hsl(20, 14%, 10%);
+
+    --popover: hsl(0, 0%, 100%);
+    --popover-foreground: hsl(20, 14%, 10%);
+
+    --primary: hsl(215, 90%, 48%);
+    --primary-foreground: hsl(210, 40%, 98%);
+
+    --secondary: hsl(35, 20%, 90%);
+    --secondary-foreground: hsl(24, 10%, 10%);
+
+    --muted: hsl(35, 20%, 90%);
+    --muted-foreground: hsl(25, 5%, 45%);
+
+    --accent: hsl(35, 20%, 88%);
+    --accent-foreground: hsl(24, 10%, 10%);
+
+    --destructive: hsl(0, 75%, 55%);
+    --destructive-foreground: hsl(210, 40%, 98%);
+
+    --border: hsl(35, 15%, 85%);
+    --input: hsl(35, 15%, 85%);
+    --ring: hsl(215, 90%, 48%);
+
+    --radius: 1rem;
+  }
+
+  .dark {
+    color-scheme: dark;
+
+    /* DARK MODE - Mit Kommas */
+    --background: hsl(24, 10%, 4%);
+    --foreground: hsl(40, 20%, 96%);
+
+    --card: hsl(24, 6%, 8%);
+    --card-foreground: hsl(40, 20%, 96%);
+
+    --popover: hsl(24, 6%, 8%);
+    --popover-foreground: hsl(40, 20%, 96%);
+
+    --primary: hsl(215, 90%, 58%);
+    --primary-foreground: hsl(0, 0%, 100%);
+
+    --secondary: hsl(24, 5%, 14%);
+    --secondary-foreground: hsl(40, 20%, 96%);
+
+    --muted: hsl(24, 5%, 14%);
+    --muted-foreground: hsl(24, 5%, 60%);
+
+    --accent: hsl(24, 5%, 18%);
+    --accent-foreground: hsl(40, 20%, 96%);
+
+    --destructive: hsl(0, 60%, 40%);
+    --destructive-foreground: hsl(0, 0%, 98%);
+
+    --border: hsl(24, 5%, 14%);
+    --input: hsl(24, 5%, 14%);
+    --ring: hsl(215, 90%, 58%);
+  }
+
+  /* Global Reset - Zwingt Background auf Body & HTML */
+  html, body {
+    background-color: var(--background);
+    color: var(--foreground);
+    min-height: 100vh;
+  }
+  
+  body {
+    font-feature-settings: "rlig" 1, "calt" 1;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
   * {
     border-color: var(--border);
   }
-  body {
-    background-color: var(--background);
-    color: var(--foreground);
+}
+
+/* Background Utilities */
+@layer utilities {
+  .bg-grid-slate-900\/5 {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(15 23 42 / 0.04)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
+  }
+
+  .dark .bg-grid-slate-100\/5 {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(248 250 252 / 0.04)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
   }
 }

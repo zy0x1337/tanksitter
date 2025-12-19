@@ -11,6 +11,7 @@
       "mobile": "Works on any mobile"
     },
     "trust_badges": {
+      "features_headline": "Why TankSitter?",
       "photo_title": "Visual Tasks",
       "photo_desc": "Images instead of text walls",
       "qr_title": "QR Access",
@@ -35,16 +36,16 @@
   "Login": {
     "title": "Login",
     "subtitle": "Your Aquarium Sitter Guide",
-    "emailplaceholder": "Email Address",
-    "buttonsend": "Send Magic Link",
-    "buttonsending": "Sending...",
-    "magiclinkhint": "No password. Just click the link in your email.",
-    "successtitle": "Email sent!",
-    "successmsg1": "We sent a magic link to",
-    "successmsg2": "",
-    "successmsg3": "Click it to sign in.",
-    "spamhint": "Didn't arrive? Please check your spam folder.",
-    "backbutton": "Back to dashboard"
+    "email_placeholder": "Email Address",
+    "button_send": "Send Magic Link",
+    "button_sending": "Sending...",
+    "magic_link_hint": "No password. Just click the link in your email.",
+    "success_title": "Email sent!",
+    "success_msg1": "We sent a magic link to",
+    "success_msg2": "",
+    "success_msg3": "Click it to sign in.",
+    "spam_hint": "Didn't arrive? Please check your spam folder.",
+    "back_button": "Back to dashboard"
   },
   "Dashboard": {
     "welcome": "Welcome back, {email}!",
@@ -143,5 +144,39 @@
     "pdf_col_done": "Done",
     "pdf_dummy_feed": "Feeding (See App for photos)",
     "pdf_dummy_check": "Tech Check (Filter/Temp)"
+  },
+  "Legal": {
+    "imprint_title": "Imprint",
+    "imprint_subtitle": "Legal Disclosure",
+    "privacy_title": "Privacy Policy",
+    "privacy_subtitle": "Data Protection Declaration",
+    "last_updated": "Last updated: December 2025",
+    "back_home": "Back to Home",
+    "contact": "Contact",
+    "questions": "Questions? Contact us:",
+    "imprint": {
+      "section1_title": "Information according to § 5 TMG",
+      "section2_title": "Contact",
+      "section3_title": "Person responsible for content",
+      "section3_subtitle": "acc. to § 55 Abs. 2 RStV",
+      "disclaimer_text": "The European Commission provides a platform for online dispute resolution (ODR): https://ec.europa.eu/consumers/odr. We are not willing or obliged to participate in dispute resolution proceedings before a consumer arbitration board."
+    },
+    "privacy": {
+      "gen_title": "1. General",
+      "gen_text": "We take the protection of your personal data very seriously. We treat your personal data confidentially and in accordance with the statutory data protection regulations and this data protection declaration.",
+      "hosting_title": "2. Hosting & Backend",
+      "vercel_text": "This website is hosted on Vercel. Vercel collects log files (IP addresses) for security and performance reasons.",
+      "supabase_text": "We use Supabase for authentication and database services. When you sign up via Email (Magic Link), your email address is stored in our database hosted by Supabase.",
+      "data_title": "3. Data Collection",
+      "data_account": "Account Data:",
+      "data_account_text": "We only store your email address to create your account. We do not store passwords.",
+      "data_usage": "Usage Data:",
+      "data_usage_text": "We store the tank names, tasks, and images you upload.",
+      "img_title": "4. Images",
+      "img_note": "Important Note:",
+      "img_text": "Images uploaded to tasks are stored in a public bucket to allow your sitter to view them without login. Please do not upload sensitive personal information in these images.",
+      "rights_title": "5. Your Rights",
+      "rights_text": "You have the right to request information about your stored data, its origin, its recipients, and the purpose of its collection at any time. You also have the right to request that it be corrected, blocked, or deleted."
+    }
   }
 }
