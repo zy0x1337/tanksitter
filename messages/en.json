@@ -62,7 +62,14 @@
     "save_button": "Save Changes",
     "saved_success": "Profile updated successfully.",
     "settings_tooltip": "Edit Profile",
-    "back_to_dashboard": "Back to Dashboard"
+    "back_to_dashboard": "Back to Dashboard",
+    "label_phone": "Mobile Number (for calls)",
+    "label_whatsapp": "WhatsApp Number (optional)",
+    "label_telegram": "Telegram Username (optional)",
+    "label_notes": "Additional Emergency Notes",
+    "placeholder_phone": "+1 555 0123456",
+    "placeholder_telegram": "@username",
+    "placeholder_notes": "e.g. Neighbor has spare key..."
   },
   "Sitter": {
     "emergency_button": "Report Emergency / Issue",

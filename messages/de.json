@@ -62,7 +62,14 @@
     "save_button": "Speichern",
     "saved_success": "Profil erfolgreich aktualisiert.",
     "settings_tooltip": "Profil bearbeiten",
-    "back_to_dashboard": "Zurück zum Dashboard"
+    "back_to_dashboard": "Zurück zum Dashboard",
+    "label_phone": "Mobilnummer (für Anrufe)",
+    "label_whatsapp": "WhatsApp Nummer (optional)",
+    "label_telegram": "Telegram Username (optional)",
+    "label_notes": "Zusätzliche Notfall-Infos",
+    "placeholder_phone": "+49 170 1234567",
+    "placeholder_telegram": "@username",
+    "placeholder_notes": "z.B. Nachbar hat Ersatzschlüssel..."
   },
   "Sitter": {
     "emergency_button": "Notfall / Problem melden",
