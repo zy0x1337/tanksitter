@@ -101,11 +101,15 @@
     "photo_label": "Reference Photo",
     "no_description": "No description provided.",
     "emergency": {
-      "title": "Emergency Contact",
-      "subtitle": "If something looks wrong or isn't working:",
-      "call_button": "Call Owner",
-      "whatsapp_action": "Send Message",
-      "notes_label": "Important Notes"
+    "title": "Emergency Contact",
+    "subtitle": "If something looks wrong or isn't working:",
+    "call_button": "Call Owner",
+    "whatsapp_action": "Send Message",
+    "notes_label": "Important Notes",
+    "toggle_simple_mode": "Large Text",
+    "toggle_normal_mode": "Normal View",
+    "simple_mode_done": "FINISHED!",
+    "simple_mode_todo": "MARK AS DONE"
     }
   },
   "Forms": {

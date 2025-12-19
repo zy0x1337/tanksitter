@@ -12,9 +12,8 @@ import {
     MessageCircle, 
     Send, 
     Clock, 
-    Moon, 
-    Sun,
-    Info
+    Info,
+    Glasses // Icon für den Modus
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { notFound } from 'next/navigation'
@@ -29,9 +28,7 @@ interface PageProps {
 
 export default function SitterView({ params }: PageProps) {
   const { token } = use(params)
-  const t = useTranslations('SitterView') // Achte auf den richtigen Namespace (SitterView vs Sitter)
-  // Fallback Namespace falls du SitterView noch nicht überall hast:
-  const tSitter = useTranslations('Sitter') 
+  const t = useTranslations('SitterView')
   const tForms = useTranslations('Forms')
   
   const supabase = createClient()
@@ -40,37 +37,28 @@ export default function SitterView({ params }: PageProps) {
   const [tank, setTank] = useState<any>(null)
   const [tasks, setTasks] = useState<any[]>([])
   const [owner, setOwner] = useState<any>(null)
-  
-  // State für erledigte Tasks (ID Array)
   const [doneTasks, setDoneTasks] = useState<string[]>([])
+  
+  // GRANNY MODE STATE
+  const [isSimpleMode, setIsSimpleMode] = useState(false)
 
-  // 1. Daten laden
   useEffect(() => {
     const fetchData = async () => {
-      // Tank laden
       const { data: tankData, error } = await supabase
         .from('tanks')
-        .select(`
-            *,
-            profiles:user_id (
-                phone, whatsapp, telegram, emergency_notes
-            )
-        `)
+        .select(`*, profiles:user_id (phone, whatsapp, telegram, emergency_notes)`)
         .eq('share_token', token)
         .single()
       
       if (!tankData || error) {
         setLoading(false)
-        return // Handle 404 later
+        return
       }
 
       setTank(tankData)
-      
-      // Profile extrahieren (Supabase gibt Array oder Objekt zurück je nach Rel)
       const ownerData = Array.isArray(tankData.profiles) ? tankData.profiles[0] : tankData.profiles
       setOwner(ownerData)
 
-      // Tasks laden
       const { data: taskData } = await supabase
         .from('tasks')
         .select('*')
@@ -80,134 +68,123 @@ export default function SitterView({ params }: PageProps) {
       setTasks(taskData || [])
       setLoading(false)
 
-      // LocalStorage checken: Welche Tasks wurden HEUTE schon erledigt?
       const today = new Date().toISOString().split('T')[0]
       const storageKey = `tanksitter_done_${tankData.id}_${today}`
       const savedDone = localStorage.getItem(storageKey)
-      if (savedDone) {
-        setDoneTasks(JSON.parse(savedDone))
-      }
+      if (savedDone) setDoneTasks(JSON.parse(savedDone))
     }
     fetchData()
   }, [token, supabase])
 
-  // 2. Task abhaken
   const handleToggleTask = (taskId: string) => {
     const isDone = doneTasks.includes(taskId)
     let newDone = []
-
     if (isDone) {
       newDone = doneTasks.filter(id => id !== taskId)
     } else {
       newDone = [...doneTasks, taskId]
     }
-
     setDoneTasks(newDone)
-
     const today = new Date().toISOString().split('T')[0]
     const storageKey = `tanksitter_done_${tank?.id}_${today}`
     localStorage.setItem(storageKey, JSON.stringify(newDone))
   }
 
-  // Helper für Translations (Fallback Logik)
+  // Fallback Helper
   const getText = (key: string, fallback?: string) => {
-    // Versuch SitterView Namespace, sonst Sitter, sonst Fallback
     try {
         const text = t(key as any)
         if (text && text !== `SitterView.${key}`) return text
     } catch {}
-    try {
-        const text = tSitter(key as any)
-        if (text && text !== `Sitter.${key}`) return text
-    } catch {}
     return fallback || key
   }
 
-  // Loading State
-  if (loading) return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4 animate-pulse">
-            <div className="w-16 h-16 bg-muted rounded-full"></div>
-            <div className="h-4 w-32 bg-muted rounded"></div>
-        </div>
-    </div>
-  )
-
-  // 404
+  if (loading) return <div className="min-h-screen bg-background flex items-center justify-center"><div className="w-16 h-16 bg-muted rounded-full animate-pulse"/></div>
   if (!tank) return notFound()
 
   const allDone = tasks.length > 0 && doneTasks.length === tasks.length
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans transition-colors duration-300">
+    <div className={`min-h-screen transition-colors duration-300 ${isSimpleMode ? 'bg-white text-black' : 'bg-background text-foreground'}`}>
       
       {/* Sticky Header */}
-      <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border p-4 shadow-sm">
+      <div className={`sticky top-0 z-50 border-b p-4 shadow-sm transition-all ${isSimpleMode ? 'bg-white border-black border-b-2 py-6' : 'bg-background/80 backdrop-blur-md border-border'}`}>
         <div className="max-w-md mx-auto flex items-center justify-between">
             <div className="flex items-center gap-3">
-                <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-xl text-blue-600 dark:text-blue-400">
-                     <span className="text-xl">🐠</span>
-                </div>
+                {!isSimpleMode && (
+                    <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-xl text-blue-600 dark:text-blue-400">
+                        <span className="text-xl">🐠</span>
+                    </div>
+                )}
                 <div>
-                    <h1 className="font-bold text-foreground text-base leading-none truncate max-w-[150px]">
+                    <h1 className={`font-bold leading-none truncate max-w-[200px] ${isSimpleMode ? 'text-3xl text-black' : 'text-foreground text-base'}`}>
                         {tank.name}
                     </h1>
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">Sitter Guide</p>
+                    {!isSimpleMode && <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">Sitter Guide</p>}
                 </div>
             </div>
             
             <div className="flex gap-2">
-                <ModeToggle />
-                {owner?.phone && (
-                    <a href={`tel:${owner.phone}`}>
-                        <Button variant="destructive" size="icon" className="rounded-full shadow-md shadow-red-500/20">
-                            <Phone className="w-4 h-4" />
-                        </Button>
-                    </a>
-                )}
+                {/* SIMPLE MODE TOGGLE */}
+                <Button 
+                    variant={isSimpleMode ? "default" : "outline"} 
+                    size={isSimpleMode ? "lg" : "icon"}
+                    onClick={() => setIsSimpleMode(!isSimpleMode)}
+                    className={isSimpleMode ? "bg-black text-white hover:bg-slate-800 text-lg font-bold px-6 border-2 border-black" : ""}
+                    title="Toggle Simple View"
+                >
+                    {isSimpleMode ? (
+                         <span className="flex items-center gap-2"><Glasses className="w-6 h-6" /> {t('toggle_normal_mode')}</span>
+                    ) : (
+                         <Glasses className="w-4 h-4" />
+                    )}
+                </Button>
+
+                {!isSimpleMode && <ModeToggle />}
             </div>
         </div>
       </div>
 
-      <main className="max-w-md mx-auto p-4 pb-20 space-y-6">
+      <main className="max-w-md mx-auto p-4 pb-24 space-y-6">
         
         {/* Intro / Status Card */}
         <div className={`
             rounded-3xl p-6 shadow-sm border transition-all duration-500 relative overflow-hidden
-            ${allDone 
-                ? 'bg-green-100/50 border-green-200 dark:bg-green-900/10 dark:border-green-900/30' 
-                : 'bg-card border-border'
+            ${isSimpleMode 
+                ? (allDone ? 'bg-green-100 border-4 border-green-600' : 'bg-white border-4 border-black') 
+                : (allDone ? 'bg-green-100/50 border-green-200 dark:bg-green-900/10 dark:border-green-900/30' : 'bg-card border-border')
             }
         `}>
             <div className="relative z-10">
-                <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
+                <h2 className={`font-bold mb-2 flex items-center gap-2 ${isSimpleMode ? 'text-3xl' : 'text-xl'}`}>
                     {allDone 
-                        ? <span className="text-green-600">All done! 🎉</span> 
+                        ? <span className="text-green-700">Alles fertig! 🎉</span> 
                         : getText('tasks_title', 'Tasks for Today')
                     }
                 </h2>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-                    {allDone 
-                        ? getText('intro_done', 'Great job! The fish are happy. See you tomorrow!') 
-                        : getText('intro_pending', 'Please complete these tasks to keep the ecosystem healthy.')
-                    }
-                </p>
                 
-                {/* Progress Bar */}
-                <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                {/* Im Simple Mode verstecken wir den Text wenn fertig, damit es übersichtlicher ist */}
+                {(!allDone || !isSimpleMode) && (
+                    <p className={`text-muted-foreground leading-relaxed mb-6 ${isSimpleMode ? 'text-xl text-black' : 'text-sm'}`}>
+                        {allDone 
+                            ? getText('intro_done', 'Great job! See you tomorrow!') 
+                            : getText('intro_pending', 'Please complete these tasks.')
+                        }
+                    </p>
+                )}
+                
+                {/* Progress Bar (Gigantisch im Simple Mode) */}
+                <div className={`rounded-full overflow-hidden ${isSimpleMode ? 'h-8 bg-gray-200 border-2 border-black' : 'h-2 bg-secondary'}`}>
                     <div 
-                        className={`h-full transition-all duration-500 ease-out rounded-full ${allDone ? 'bg-green-500' : 'bg-blue-600'}`}
+                        className={`h-full transition-all duration-500 ease-out ${allDone ? 'bg-green-500' : 'bg-blue-600'}`}
                         style={{ width: `${(doneTasks.length / Math.max(tasks.length, 1)) * 100}%` }}
                     />
-                </div>
-                <div className="mt-2 text-xs text-muted-foreground text-right font-medium">
-                    {doneTasks.length} / {tasks.length} {getText('done_status', 'Done')?.replace('✅', '')}
                 </div>
             </div>
         </div>
 
         {/* Task Liste */}
-        <div className="space-y-4">
+        <div className={`space-y-4 ${isSimpleMode ? 'space-y-8' : ''}`}>
             {tasks.map(task => {
                 const isDone = doneTasks.includes(task.id)
                 
@@ -217,61 +194,72 @@ export default function SitterView({ params }: PageProps) {
                         onClick={() => handleToggleTask(task.id)}
                         className={`
                             relative group cursor-pointer transition-all duration-300
-                            rounded-2xl border overflow-hidden
-                            ${isDone 
-                                ? 'bg-secondary/30 border-transparent opacity-60 scale-[0.98]' 
-                                : 'bg-card border-border hover:border-blue-300 hover:shadow-md dark:hover:border-blue-700'
+                            rounded-2xl overflow-hidden
+                            ${isSimpleMode 
+                                ? `border-4 ${isDone ? 'border-green-500 bg-green-50 opacity-50' : 'border-black bg-white shadow-xl'}`
+                                : `border ${isDone ? 'bg-secondary/30 border-transparent opacity-60 scale-[0.98]' : 'bg-card border-border hover:border-blue-300'}`
                             }
                         `}
                     >
                         {/* Image Section */}
                         {task.image_path && (
-                             <div className="h-40 w-full bg-secondary relative overflow-hidden">
+                             <div className={`w-full bg-secondary relative overflow-hidden ${isSimpleMode ? 'h-64' : 'h-40'}`}>
                                 <img 
                                     src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/task-images/${task.image_path}`} 
-                                    className={`w-full h-full object-cover transition-all duration-500 ${isDone ? 'grayscale scale-105' : 'group-hover:scale-105'}`}
+                                    className={`w-full h-full object-cover ${isDone ? 'grayscale' : ''}`}
                                 />
                                 {isDone && (
-                                    <div className="absolute inset-0 bg-background/50 backdrop-blur-[2px] flex items-center justify-center">
-                                        <div className="bg-green-500 text-white rounded-full p-3 shadow-lg animate-in zoom-in spin-in-12 duration-300">
-                                            <Check className="w-8 h-8" strokeWidth={3} />
-                                        </div>
+                                    <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
+                                        <Check className="w-16 h-16 text-green-700" strokeWidth={4} />
                                     </div>
                                 )}
                              </div>
                         )}
 
-                        {/* Content Section */}
-                        <div className="p-5 flex gap-4 items-start">
+                        <div className={`flex gap-4 items-start ${isSimpleMode ? 'p-6 block' : 'p-5'}`}>
+                             {/* Icon hidden in Simple Mode if Image exists to save space, otherwise huge */}
                              {!task.image_path && (
-                                <div className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${isDone ? 'bg-green-100 text-green-600' : 'bg-blue-50 text-blue-600 dark:bg-blue-900/20'}`}>
-                                    {isDone ? <Check className="w-6 h-6" /> : <Droplets className="w-6 h-6" />}
+                                <div className={`shrink-0 flex items-center justify-center transition-colors 
+                                    ${isSimpleMode 
+                                        ? `w-16 h-16 rounded-2xl mb-4 ${isDone ? 'bg-green-200' : 'bg-blue-100'}` 
+                                        : `w-12 h-12 rounded-xl ${isDone ? 'bg-green-100 text-green-600' : 'bg-blue-50 text-blue-600 dark:bg-blue-900/20'}`
+                                    }`}>
+                                    {isDone ? <Check className={isSimpleMode ? "w-10 h-10 text-black" : "w-6 h-6"} /> : <Droplets className={isSimpleMode ? "w-10 h-10 text-black" : "w-6 h-6"} />}
                                 </div>
                              )}
 
                             <div className="flex-1 min-w-0">
-                                <div className="flex justify-between items-start mb-1">
-                                    <h3 className={`font-bold text-lg leading-tight ${isDone ? 'text-muted-foreground line-through decoration-2' : 'text-foreground'}`}>
-                                        {task.title}
-                                    </h3>
-                                </div>
+                                <h3 className={`font-bold leading-tight ${isSimpleMode ? 'text-3xl text-black mb-2' : 'text-lg text-foreground'}`}>
+                                    {task.title}
+                                </h3>
                                 
-                                <span className={`inline-flex items-center gap-1 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full tracking-wide mb-3 ${
-                                    task.frequency_type === 'daily' 
-                                        ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300' 
-                                        : 'bg-secondary text-secondary-foreground'
-                                }`}>
-                                    <Clock size={10} />
-                                    {tForms(`freq_${task.frequency_type}`) || task.frequency_type}
-                                </span>
+                                {!isSimpleMode && (
+                                    <span className={`inline-flex items-center gap-1 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full tracking-wide mb-3 bg-secondary`}>
+                                        <Clock size={10} />
+                                        {tForms(`freq_${task.frequency_type}`) || task.frequency_type}
+                                    </span>
+                                )}
 
-                                <p className="text-sm text-muted-foreground leading-snug">
+                                <p className={`text-muted-foreground leading-snug ${isSimpleMode ? 'text-xl text-gray-600 mb-6' : 'text-sm'}`}>
                                     {task.description || getText('no_description', 'No description provided.')}
                                 </p>
+                                
+                                {/* SIMPLE MODE BUTTON */}
+                                {isSimpleMode && (
+                                    <button className={`
+                                        w-full py-4 rounded-xl text-xl font-black uppercase tracking-wider border-2
+                                        ${isDone 
+                                            ? 'bg-white border-green-600 text-green-700' 
+                                            : 'bg-green-600 border-green-800 text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-none'
+                                        }
+                                    `}>
+                                        {isDone ? t('simple_mode_done') : t('simple_mode_todo')}
+                                    </button>
+                                )}
                             </div>
                             
-                            {/* Checkbox Button (Desktop/NoImage Layout) */}
-                            {!task.image_path && (
+                            {/* Checkbox Button (Desktop/NoImage Layout) - Hide in Simple Mode */}
+                            {!task.image_path && !isSimpleMode && (
                                 <div className={`h-6 w-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
                                     isDone ? 'border-green-500 bg-green-500' : 'border-muted-foreground/30'
                                 }`}>
@@ -280,8 +268,8 @@ export default function SitterView({ params }: PageProps) {
                             )}
                         </div>
                         
-                        {/* Button Bar für Image Cards */}
-                        {task.image_path && (
+                        {/* Normal Button Bar */}
+                        {!isSimpleMode && task.image_path && (
                             <div className={`px-5 pb-5 pt-0 transition-all ${isDone ? 'opacity-50' : ''}`}>
                                 <Button 
                                     variant={isDone ? "outline" : "default"} 
@@ -294,73 +282,35 @@ export default function SitterView({ params }: PageProps) {
                     </div>
                 )
             })}
-
-            {tasks.length === 0 && (
-                <div className="text-center py-10 px-4 text-muted-foreground bg-secondary/30 border border-dashed border-border rounded-3xl">
-                    <CloudRain className="w-12 h-12 mx-auto mb-3 opacity-20" />
-                    <p>{getText('no_tasks', 'No tasks pending.')}</p>
-                </div>
-            )}
         </div>
 
         {/* EMERGENCY CONTACTS */}
-        {(owner?.phone || owner?.whatsapp || owner?.telegram || owner?.emergency_notes) && (
-          <div className="mt-12 border-t border-border pt-8">
-            <h2 className="font-bold text-destructive mb-4 flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5" />
+        {(owner?.phone || owner?.whatsapp) && (
+          <div className={`mt-12 pt-8 ${isSimpleMode ? 'border-t-4 border-black' : 'border-t border-border'}`}>
+            <h2 className={`font-bold text-destructive mb-4 flex items-center gap-2 ${isSimpleMode ? 'text-3xl' : ''}`}>
+              <AlertTriangle className={isSimpleMode ? "w-8 h-8" : "w-5 h-5"} />
               {getText('emergency.title', 'Emergency Contact')}
             </h2>
             
-            <p className="text-sm text-muted-foreground mb-4">
-              {getText('emergency.subtitle', 'If something looks wrong or isn\'t working:')}
-            </p>
-
-            <div className="grid gap-3">
+            <div className="grid gap-4">
               {owner.phone && (
-                <a href={`tel:${owner.phone}`} className="flex items-center gap-4 p-4 bg-card border border-border rounded-xl hover:bg-secondary transition-colors shadow-sm group">
-                  <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full text-green-700 dark:text-green-400 group-hover:scale-110 transition-transform">
-                    <Phone size={20} />
+                <a href={`tel:${owner.phone}`} className={`flex items-center gap-4 p-4 rounded-xl transition-colors ${
+                    isSimpleMode 
+                        ? 'bg-red-100 border-4 border-red-600 hover:bg-red-200' 
+                        : 'bg-card border border-border hover:bg-secondary shadow-sm'
+                }`}>
+                  <div className={`rounded-full flex items-center justify-center ${
+                      isSimpleMode ? 'bg-red-600 text-white w-16 h-16' : 'bg-green-100 dark:bg-green-900/30 p-3 text-green-700'
+                  }`}>
+                    <Phone size={isSimpleMode ? 32 : 20} />
                   </div>
                   <div>
-                    <div className="font-bold text-foreground">{getText('emergency.call_button', 'Call Owner')}</div>
-                    <div className="text-xs text-muted-foreground">{owner.phone}</div>
+                    <div className={`font-bold ${isSimpleMode ? 'text-2xl text-black' : 'text-foreground'}`}>
+                        {getText('emergency.call_button', 'Call Owner')}
+                    </div>
+                    <div className={`${isSimpleMode ? 'text-xl font-mono text-black' : 'text-xs text-muted-foreground'}`}>{owner.phone}</div>
                   </div>
                 </a>
-              )}
-              
-              {owner.whatsapp && (
-                <a href={`https://wa.me/${owner.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" className="flex items-center gap-4 p-4 bg-card border border-border rounded-xl hover:bg-secondary transition-colors shadow-sm group">
-                  <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full text-green-700 dark:text-green-400 group-hover:scale-110 transition-transform">
-                    <MessageCircle size={20} />
-                  </div>
-                  <div>
-                    <div className="font-bold text-foreground">WhatsApp</div>
-                    <div className="text-xs text-muted-foreground">{getText('emergency.whatsapp_action', 'Send Message')}</div>
-                  </div>
-                </a>
-              )}
-
-               {owner.telegram && (
-                <a href={`https://t.me/${owner.telegram.replace('@', '')}`} target="_blank" className="flex items-center gap-4 p-4 bg-card border border-border rounded-xl hover:bg-secondary transition-colors shadow-sm group">
-                  <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
-                    <Send size={20} />
-                  </div>
-                  <div>
-                    <div className="font-bold text-foreground">Telegram</div>
-                    <div className="text-xs text-muted-foreground">{owner.telegram}</div>
-                  </div>
-                </a>
-              )}
-
-              {owner.emergency_notes && (
-                <div className="mt-2 p-4 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-900/30 rounded-xl text-sm">
-                   <div className="font-bold text-yellow-800 dark:text-yellow-500 mb-1 text-xs uppercase tracking-wider flex items-center gap-1">
-                     <Info size={12} /> {getText('emergency.notes_label', 'Important Notes')}
-                   </div>
-                   <p className="text-yellow-900 dark:text-yellow-200 leading-relaxed whitespace-pre-wrap">
-                     {owner.emergency_notes}
-                   </p>
-                </div>
               )}
             </div>
           </div>

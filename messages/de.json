@@ -101,11 +101,15 @@
     "photo_label": "Referenz-Foto",
     "no_description": "Keine weitere Beschreibung.",
     "emergency": {
-      "title": "Notfall Kontakt",
-      "subtitle": "Falls etwas komisch aussieht oder nicht funktioniert:",
-      "call_button": "Anrufen",
-      "whatsapp_action": "Nachricht schreiben",
-      "notes_label": "Wichtige Hinweise"
+    "title": "Notfall Kontakt",
+    "subtitle": "Falls etwas komisch aussieht oder nicht funktioniert:",
+    "call_button": "Anrufen",
+    "whatsapp_action": "Nachricht schreiben",
+    "notes_label": "Wichtige Hinweise",
+    "toggle_simple_mode": "Große Schrift",
+    "toggle_normal_mode": "Normale Ansicht",
+    "simple_mode_done": "ERLEDIGT!",
+    "simple_mode_todo": "ALS ERLEDIGT MARKIEREN"
     }
   },
   "Forms": {
