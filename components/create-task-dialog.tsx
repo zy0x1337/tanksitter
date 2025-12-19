@@ -1,176 +1,177 @@
 'use client'
 
 import { useState } from 'react'
+import { createClient } from '@/lib/supabase-client'
+import { useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger
-} from '@/components/ui/dialog'
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
-} from '@/components/ui/select'
-import { createTask } from '@/actions/tasks'
-import { Loader2, Camera, Utensils, Droplets, FlaskConical, Zap } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Loader2, Plus, Upload, X } from 'lucide-react'
+import { toast } from 'sonner'
+import Image from 'next/image'
 
-// Unsere Smart Presets
-const PRESETS = [
-  { 
-    id: 'feed', 
-    label: 'Füttern', 
-    icon: <Utensils className="w-4 h-4" />,
-    title: 'Füttern', 
-    desc: 'Bitte genau die Menge auf dem Foto beachten. Nicht mehr!',
-    freq: 'daily'
-  },
-  { 
-    id: 'water', 
-    label: 'Wasserwechsel', 
-    icon: <Droplets className="w-4 h-4" />,
-    title: 'Wasserwechsel (30%)', 
-    desc: 'Temperatur beachten! Wasseraufbereiter nicht vergessen.',
-    freq: 'weekly'
-  },
-  { 
-    id: 'fert', 
-    label: 'Düngen', 
-    icon: <FlaskConical className="w-4 h-4" />,
-    title: 'Pflanzendünger', 
-    desc: 'Nach dem Licht-Anschalten düngen.',
-    freq: 'daily'
-  },
-  { 
-    id: 'tech', 
-    label: 'Technik', 
-    icon: <Zap className="w-4 h-4" />,
-    title: 'Technik Check', 
-    desc: 'Läuft der Filter? Ist die Temperatur bei 24°C?',
-    freq: 'daily'
-  }
-]
+interface TaskFormProps {
+  tankId: string
+  onSuccess?: () => void // Optional callback if used in dialog
+}
 
-export function CreateTaskDialog({ tankId }: { tankId: string }) {
-  const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
+export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
+  const t = useTranslations('Forms')
+  const supabase = createClient()
+  const router = useRouter()
   
-  // State für Formular-Felder, damit wir sie durch Presets füllen können
-  const [title, setTitle] = useState('')
-  const [desc, setDesc] = useState('')
-  const [freq, setFreq] = useState('daily')
+  const [loading, setLoading] = useState(false)
+  const [preview, setPreview] = useState<string | null>(null)
+  const [file, setFile] = useState<File | null>(null)
 
-  async function handleSubmit(formData: FormData) {
-    setLoading(true)
-    formData.append('tankId', tankId)
-    // Wir müssen sicherstellen, dass unsere State-Werte genutzt werden,
-    // falls der User nichts geändert hat (FormData holt Inputs, das passt, solange value={state} gesetzt ist)
-    
-    await createTask(formData)
-    setLoading(false)
-    setOpen(false)
-    // Reset
-    setTitle('')
-    setDesc('')
-    setFreq('daily')
+  // Image Preview Handler
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0]
+    if (!selected) return
+
+    setFile(selected)
+    const objectUrl = URL.createObjectURL(selected)
+    setPreview(objectUrl)
   }
 
-  const applyPreset = (preset: typeof PRESETS[0]) => {
-    setTitle(preset.title)
-    setDesc(preset.desc)
-    setFreq(preset.freq)
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setLoading(true)
+
+    const formData = new FormData(e.currentTarget)
+    const title = formData.get('title') as string
+    const frequency_type = formData.get('frequency_type') as string
+    
+    let image_path = null
+
+    // 1. Image Upload
+    if (file) {
+      const ext = file.name.split('.').pop()
+      const fileName = `${Math.random().toString(36).substring(2)}.${ext}`
+      const { error: uploadError } = await supabase.storage
+        .from('task-images')
+        .upload(fileName, file)
+
+      if (uploadError) {
+        toast.error('Image upload failed')
+        setLoading(false)
+        return
+      }
+      image_path = fileName
+    } else {
+        // Zwingend ein Bild verlangen?
+        toast.error('Please upload a photo')
+        setLoading(false)
+        return
+    }
+
+    // 2. Insert Task
+    const { error } = await supabase
+      .from('tasks')
+      .insert({
+        tank_id: tankId,
+        title,
+        frequency_type,
+        image_path
+      })
+
+    if (error) {
+      toast.error(error.message)
+    } else {
+      toast.success('Task added!')
+      if (onSuccess) {
+          onSuccess()
+      } else {
+          router.refresh()
+          // Reset form manually or redirect
+          setPreview(null)
+          setFile(null)
+          e.currentTarget.reset()
+      }
+    }
+    setLoading(false)
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="gap-2 bg-blue-600 hover:bg-blue-700 shadow-md">
-           <span>+</span> Aufgabe hinzufügen
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Neue Aufgabe erstellen</DialogTitle>
-        </DialogHeader>
+    <form onSubmit={onSubmit} className="space-y-6">
         
-        {/* Preset Chips */}
-        <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 no-scrollbar">
-          {PRESETS.map(preset => (
-            <button
-              key={preset.id}
-              type="button"
-              onClick={() => applyPreset(preset)}
-              className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-600 rounded-full text-xs font-medium transition-colors border border-transparent hover:border-blue-200 whitespace-nowrap"
-            >
-              {preset.icon}
-              {preset.label}
-            </button>
-          ))}
+        {/* Title Input */}
+        <div className="space-y-2">
+            <Label htmlFor="title">{t('task_title_label')}</Label>
+            <Input 
+                id="title" 
+                name="title" 
+                placeholder={t('task_title_placeholder')} 
+                required 
+                className="bg-background border-input"
+            />
         </div>
 
-        <form action={handleSubmit} className="grid gap-5 py-2">
-          
-          {/* FOTO - Jetzt ganz oben und prominent */}
-          <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl p-4 text-center group hover:border-blue-300 transition-colors">
-            <Label htmlFor="image" className="cursor-pointer block">
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm text-slate-400 group-hover:text-blue-500">
-                <Camera className="w-6 h-6" />
-              </div>
-              <span className="text-sm font-medium text-slate-700">Foto hinzufügen (Optional)</span>
-              <p className="text-xs text-slate-400 mt-1">Zeig den Löffel oder die Dose!</p>
-            </Label>
-            <Input 
-              id="image" 
-              name="image" 
-              type="file" 
-              accept="image/*" 
-              className="hidden" // Input verstecken, Label triggert es
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="title">Titel</Label>
-            <Input 
-              id="title" 
-              name="title" 
-              value={title} 
-              onChange={e => setTitle(e.target.value)}
-              placeholder="z.B. Füttern" 
-              required 
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="frequency">Wie oft?</Label>
-            <Select name="frequency" value={freq} onValueChange={setFreq}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="daily">Täglich</SelectItem>
-                <SelectItem value="every_2_days">Alle 2 Tage</SelectItem>
-                <SelectItem value="weekly">Wöchentlich</SelectItem>
-                <SelectItem value="once">Einmalig</SelectItem>
-              </SelectContent>
+        {/* Frequency Select */}
+        <div className="space-y-2 relative z-20"> 
+            {/* z-20 hilft oft bei Überlappung */}
+            <Label htmlFor="frequency_type">{t('frequency_label')}</Label>
+            <Select name="frequency_type" defaultValue="daily" required>
+                <SelectTrigger className="w-full bg-background border-input">
+                    <SelectValue placeholder="Select frequency" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="daily">{t('freq_daily')}</SelectItem>
+                    <SelectItem value="weekly">{t('freq_weekly')}</SelectItem>
+                    <SelectItem value="once">{t('freq_once')}</SelectItem>
+                </SelectContent>
             </Select>
-          </div>
+        </div>
 
-          <div className="grid gap-2">
-            <Label htmlFor="description">Beschreibung</Label>
-            <Textarea 
-              id="description" 
-              name="description" 
-              value={desc}
-              onChange={e => setDesc(e.target.value)}
-              placeholder="Details für den Sitter..." 
-              className="resize-none h-24"
-            />
-          </div>
+        {/* Image Upload Area */}
+        <div className="space-y-2 relative z-10 pt-2">
+            <Label>{t('image_label')}</Label>
+            
+            <div className={`
+                border-2 border-dashed rounded-xl p-4 transition-colors text-center cursor-pointer relative overflow-hidden group
+                ${preview ? 'border-blue-500 bg-blue-50/50' : 'border-border hover:border-blue-400 hover:bg-secondary/50'}
+            `}>
+                <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleFileChange} 
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                />
+                
+                {preview ? (
+                    <div className="relative h-48 w-full rounded-lg overflow-hidden">
+                        <Image src={preview} alt="Preview" fill className="object-cover" />
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <p className="text-white font-medium text-sm">Change Photo</p>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="py-8 text-muted-foreground flex flex-col items-center gap-2">
+                        <div className="p-3 bg-secondary rounded-full">
+                            <Upload className="w-6 h-6" />
+                        </div>
+                        <span className="text-sm font-medium">{t('upload_hint')}</span>
+                        <span className="text-xs opacity-50">JPG, PNG, WEBP</span>
+                    </div>
+                )}
+            </div>
+        </div>
 
-          <Button type="submit" disabled={loading} className="w-full h-11 text-base bg-blue-600 hover:bg-blue-700">
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Aufgabe speichern'}
-          </Button>
-        </form>
-      </DialogContent>
-    </Dialog>
+        <Button type="submit" className="w-full h-12 text-lg font-bold" disabled={loading}>
+            {loading ? (
+                <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    {t('saving')}
+                </>
+            ) : (
+                <>
+                    <Plus className="w-5 h-5 mr-2" />
+                    {t('save_button')}
+                </>
+            )}
+        </Button>
+    </form>
   )
 }
