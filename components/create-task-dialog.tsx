@@ -31,21 +31,19 @@ export function CreateTaskDialog({ tankId }: CreateTaskDialogProps) {
         </Button>
       </DialogTrigger>
       {/* 
-          Hier ist die wichtige Änderung: 
-          max-w-2xl für mehr Breite (gut für das Preset-Grid)
-          max-h-[90vh] overflow-y-auto damit man auf kleinen Screens scrollen kann
+        ÄNDERUNG: sm:max-w-2xl sorgt für mehr Breite.
+        max-h-[90vh] und overflow-y-auto sorgen dafür, dass man scrollen kann, 
+        falls die Presets den Bildschirm füllen.
       */}
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{t('add_task_title')}</DialogTitle>
-          <DialogDescription>
-            {/* Optional: Kurze Erklärung */}
-          </DialogDescription>
-        </DialogHeader>
-        
-        {/* Task Form wird hier gerendert */}
-        <TaskForm tankId={tankId} onSuccess={() => setOpen(false)} />
-        
+      <DialogContent className="sm:max-w-2xl w-[95vw] max-h-[90vh] overflow-y-auto p-0">
+        <div className="p-6">
+            <DialogHeader className="mb-4">
+            <DialogTitle>{t('add_task_title')}</DialogTitle>
+            <DialogDescription className="hidden">New Task</DialogDescription>
+            </DialogHeader>
+            
+            <TaskForm tankId={tankId} onSuccess={() => setOpen(false)} />
+        </div>
       </DialogContent>
     </Dialog>
   )
