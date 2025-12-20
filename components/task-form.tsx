@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase-client'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
@@ -9,15 +9,17 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useDropzone } from 'react-dropzone' // <-- Wichtig
 import { 
     Loader2, 
     Plus, 
-    Upload, 
+    UploadCloud, 
+    Image as ImageIcon,
+    X,
     Fish, 
     Droplets, 
     TestTube, 
     FlaskConical, 
-    Zap, 
     Snowflake, 
     Scissors, 
     Wind, 
@@ -38,13 +40,35 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
   const router = useRouter()
   
   const [loading, setLoading] = useState(false)
-  const [preview, setPreview] = useState<string | null>(null)
-  const [file, setFile] = useState<File | null>(null)
-
+  
   // Formular State
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [frequency, setFrequency] = useState('daily')
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+
+  // Drag & Drop Logic
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles && acceptedFiles[0]) {
+      const file = acceptedFiles[0]
+      setImageFile(file)
+      setImagePreview(URL.createObjectURL(file))
+    }
+  }, [])
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop, 
+    accept: { 'image/*': [] }, 
+    maxFiles: 1, 
+    multiple: false
+  })
+
+  const removeImage = (e: React.MouseEvent) => {
+    e.stopPropagation() // Verhindert Klick auf Dropzone
+    setImageFile(null)
+    setImagePreview(null)
+  }
 
   // Expert Presets Definition
   const presets = [
@@ -59,17 +83,9 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
   ]
 
   const applyPreset = (preset: typeof presets[0]) => {
-    // 'as any' wird genutzt, da TypeScript dynamische i18n Keys oft nicht mag
     setTitle(tPresets(preset.id as any))
     setDescription(tPresets(`desc_${preset.id}` as any))
     setFrequency(preset.freq)
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = e.target.files?.[0]
-    if (!selected) return
-    setFile(selected)
-    setPreview(URL.createObjectURL(selected))
   }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -77,16 +93,19 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
     setLoading(true)
 
     let image_path = null
-    if (file) {
-      const ext = file.name.split('.').pop()
+    if (imageFile) {
+      const ext = imageFile.name.split('.').pop()
       const fileName = `${Math.random().toString(36).substring(2)}.${ext}`
-      const { error: uploadError } = await supabase.storage.from('task-images').upload(fileName, file)
+      // Hier nutzen wir den gleichen Pfad wie im vorherigen Code (tankId prefix ist optional aber gut für Ordnung)
+      const filePath = `${tankId}/${fileName}`
+      
+      const { error: uploadError } = await supabase.storage.from('task-images').upload(filePath, imageFile)
       if (uploadError) {
-        toast.error('Image upload failed')
+        toast.error('Image upload failed: ' + uploadError.message)
         setLoading(false)
         return
       }
-      image_path = fileName
+      image_path = filePath
     }
 
     const { error } = await supabase.from('tasks').insert({
@@ -107,8 +126,8 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
           setTitle('')
           setDescription('')
           setFrequency('daily')
-          setPreview(null)
-          setFile(null)
+          setImagePreview(null)
+          setImageFile(null)
       }
     }
     setLoading(false)
@@ -156,7 +175,7 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="description">Descr</Label>
+                <Label htmlFor="description">Details</Label>
                 <Textarea 
                     id="description" 
                     value={description}
@@ -166,46 +185,61 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
                 />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2 relative z-20">
-                    <Label htmlFor="frequency_type">{t('frequency_label')}</Label>
-                    <Select value={frequency} onValueChange={setFrequency} required>
-                        <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="daily">{t('freq_daily')}</SelectItem>
-                            <SelectItem value="weekly">{t('freq_weekly')}</SelectItem>
-                            <SelectItem value="once">{t('freq_once')}</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
+            <div className="space-y-2">
+                 <Label htmlFor="frequency_type">{t('frequency_label')}</Label>
+                 <Select value={frequency} onValueChange={setFrequency} required>
+                    <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="daily">{t('freq_daily')}</SelectItem>
+                        <SelectItem value="weekly">{t('freq_weekly')}</SelectItem>
+                        <SelectItem value="once">{t('freq_once')}</SelectItem>
+                    </SelectContent>
+                 </Select>
+            </div>
 
-                <div className="space-y-2">
-                    <Label>{t('image_label')}</Label>
-                    <div className="relative">
-                        <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 z-10 cursor-pointer w-full h-10" />
-                        <Button type="button" variant="outline" className="w-full justify-start text-muted-foreground font-normal">
-                             <Upload className="w-4 h-4 mr-2" />
-                             {preview ? 'Image selected' : 'Upload'}
-                        </Button>
+            <div className="space-y-2">
+                <Label>{t('image_label')}</Label>
+                
+                {/* DRAG AND DROP ZONE */}
+                <div 
+                  {...getRootProps()} 
+                  className={`
+                    relative border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center transition-all cursor-pointer min-h-[160px] text-center
+                    ${isDragActive ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 scale-[1.02]' : 'border-border bg-secondary/20 hover:bg-secondary/40 hover:border-muted-foreground'}
+                    ${imagePreview ? 'border-none p-0 overflow-hidden bg-black' : ''}
+                  `}
+                >
+                  <input {...getInputProps()} />
+                  
+                  {imagePreview ? (
+                    <div className="relative w-full h-48 group">
+                      <Image 
+                        src={imagePreview} 
+                        alt="Preview" 
+                        fill 
+                        className="object-cover" 
+                      />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                         <Button type="button" variant="destructive" size="icon" className="rounded-full" onClick={removeImage}>
+                            <X className="w-5 h-5" />
+                         </Button>
+                      </div>
                     </div>
+                  ) : (
+                    <div className="space-y-3 pointer-events-none">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto transition-colors ${isDragActive ? 'bg-blue-100 text-blue-600' : 'bg-background text-muted-foreground shadow-sm'}`}>
+                        {isDragActive ? <UploadCloud className="w-6 h-6 animate-bounce" /> : <ImageIcon className="w-6 h-6" />}
+                      </div>
+                      <div>
+                         <p className="text-sm font-bold text-foreground">{isDragActive ? "Drop image here!" : t('upload_hint')}</p>
+                         <p className="text-[10px] text-muted-foreground mt-1">PNG, JPG, WEBP (max. 5MB)</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
             </div>
 
-            {/* Image Preview */}
-            {preview && (
-                 <div className="relative w-full h-32 rounded-xl overflow-hidden border border-border">
-                    <Image src={preview} alt="Preview" fill className="object-cover" />
-                    <button 
-                        type="button"
-                        onClick={() => {setPreview(null); setFile(null)}}
-                        className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white p-1 rounded-full backdrop-blur-sm transition-colors"
-                    >
-                        <Upload className="w-3 h-3 rotate-45" /> 
-                    </button>
-                 </div>
-            )}
-
-            <Button type="submit" className="w-full h-11 text-base shadow-lg shadow-blue-500/10 mt-2" disabled={loading}>
+            <Button type="submit" className="w-full h-11 text-base shadow-lg shadow-blue-500/10 mt-4" disabled={loading}>
                 {loading ? <Loader2 className="animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
                 {t('save_button')}
             </Button>
