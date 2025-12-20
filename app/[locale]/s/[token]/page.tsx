@@ -7,13 +7,10 @@ import {
     Phone, 
     Check, 
     AlertTriangle, 
-    CloudRain, 
     Droplets, 
-    MessageCircle, 
-    Send, 
     Clock, 
-    Info,
-    Glasses // Icon für den Modus
+    Glasses,
+    ArrowRight
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { notFound } from 'next/navigation'
@@ -99,44 +96,69 @@ export default function SitterView({ params }: PageProps) {
     return fallback || key
   }
 
-  if (loading) return <div className="min-h-screen bg-background flex items-center justify-center"><div className="w-16 h-16 bg-muted rounded-full animate-pulse"/></div>
+  if (loading) return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full animate-pulse flex items-center justify-center">
+              <div className="w-8 h-8 bg-blue-500 rounded-full animate-ping" />
+          </div>
+      </div>
+  )
   if (!tank) return notFound()
 
   const allDone = tasks.length > 0 && doneTasks.length === tasks.length
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${isSimpleMode ? 'bg-white text-black' : 'bg-background text-foreground'}`}>
+    <div className={`min-h-screen transition-colors duration-500 overflow-hidden relative ${isSimpleMode ? 'bg-white text-black' : 'bg-background text-foreground'}`}>
+      
+      {/* PREMIUM BACKGROUNDS (Only in Normal Mode) */}
+      {!isSimpleMode && (
+         <>
+             <div className="bg-noise pointer-events-none fixed inset-0 z-50"></div>
+             <div className="absolute inset-0 bg-grid-slate-900/[0.04] dark:bg-grid-slate-100/[0.03] -z-20 mask-image-gradient" />
+             <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-blue-500/5 to-transparent pointer-events-none" />
+             </div>
+         </>
+      )}
       
       {/* Sticky Header */}
-      <div className={`sticky top-0 z-50 border-b p-4 shadow-sm transition-all ${isSimpleMode ? 'bg-white border-black border-b-2 py-6' : 'bg-background/80 backdrop-blur-md border-border'}`}>
-        <div className="max-w-md mx-auto flex items-center justify-between">
+      <div className={`sticky top-0 z-40 transition-all duration-300 ${
+          isSimpleMode 
+            ? 'bg-white border-black border-b-4 py-4 shadow-sm' 
+            : 'bg-background/80 backdrop-blur-xl border-b border-border/50 py-3'
+      }`}>
+        <div className="max-w-md mx-auto px-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
                 {!isSimpleMode && (
-                    <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-xl text-blue-600 dark:text-blue-400">
-                        <span className="text-xl">🐠</span>
+                    <div className="bg-gradient-to-br from-blue-500 to-cyan-400 p-2 rounded-xl text-white shadow-lg shadow-blue-500/20">
+                        <span className="text-lg font-bold">🐠</span>
                     </div>
                 )}
-                <div>
-                    <h1 className={`font-bold leading-none truncate max-w-[200px] ${isSimpleMode ? 'text-3xl text-black' : 'text-foreground text-base'}`}>
+                <div className="overflow-hidden">
+                    <h1 className={`font-extrabold leading-none truncate max-w-[180px] ${isSimpleMode ? 'text-3xl text-black uppercase tracking-tighter' : 'text-lg text-foreground tracking-tight'}`}>
                         {tank.name}
                     </h1>
-                    {!isSimpleMode && <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">Sitter Guide</p>}
+                    {!isSimpleMode && <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mt-0.5">Sitter Guide</p>}
                 </div>
             </div>
             
             <div className="flex gap-2">
                 {/* SIMPLE MODE TOGGLE */}
                 <Button 
-                    variant={isSimpleMode ? "default" : "outline"} 
+                    variant={isSimpleMode ? "default" : "secondary"} 
                     size={isSimpleMode ? "lg" : "icon"}
                     onClick={() => setIsSimpleMode(!isSimpleMode)}
-                    className={isSimpleMode ? "bg-black text-white hover:bg-slate-800 text-lg font-bold px-6 border-2 border-black" : ""}
+                    className={`rounded-xl transition-all ${
+                        isSimpleMode 
+                            ? "bg-black text-white hover:bg-gray-800 text-lg font-bold px-6 border-2 border-black h-12" 
+                            : "bg-secondary/50 hover:bg-secondary border border-border/50 w-10 h-10"
+                    }`}
                     title="Toggle Simple View"
                 >
                     {isSimpleMode ? (
-                         <span className="flex items-center gap-2"><Glasses className="w-6 h-6" /> {t('toggle_normal_mode')}</span>
+                        <span className="flex items-center gap-2"><Glasses className="w-6 h-6" /> {t('toggle_normal_mode')}</span>
                     ) : (
-                         <Glasses className="w-4 h-4" />
+                        <Glasses className="w-5 h-5 text-muted-foreground" />
                     )}
                 </Button>
 
@@ -145,27 +167,31 @@ export default function SitterView({ params }: PageProps) {
         </div>
       </div>
 
-      <main className="max-w-md mx-auto p-4 pb-24 space-y-6">
+      <main className="max-w-md mx-auto p-4 pb-24 space-y-6 relative z-10">
         
         {/* Intro / Status Card */}
         <div className={`
-            rounded-3xl p-6 shadow-sm border transition-all duration-500 relative overflow-hidden
+            p-6 transition-all duration-500 relative overflow-hidden group
             ${isSimpleMode 
-                ? (allDone ? 'bg-green-100 border-4 border-green-600' : 'bg-white border-4 border-black') 
-                : (allDone ? 'bg-green-100/50 border-green-200 dark:bg-green-900/10 dark:border-green-900/30' : 'bg-card border-border')
+                ? (allDone ? 'bg-green-100 border-4 border-green-600 rounded-2xl' : 'bg-white border-4 border-black rounded-2xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]') 
+                : (allDone ? 'bg-green-500/10 border-green-500/20 rounded-3xl' : 'bg-card/60 backdrop-blur-md border border-border/50 rounded-3xl shadow-sm')
             }
         `}>
+            {/* Decoration for Normal Mode */}
+            {!isSimpleMode && !allDone && (
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-transparent rounded-bl-full pointer-events-none" />
+            )}
+
             <div className="relative z-10">
-                <h2 className={`font-bold mb-2 flex items-center gap-2 ${isSimpleMode ? 'text-3xl' : 'text-xl'}`}>
+                <h2 className={`font-bold mb-2 flex items-center gap-2 ${isSimpleMode ? 'text-3xl' : 'text-xl tracking-tight'}`}>
                     {allDone 
-                        ? <span className="text-green-700">Alles fertig! 🎉</span> 
+                        ? <span className="text-green-600 dark:text-green-400 flex items-center gap-2"><Check className="w-6 h-6" /> Done!</span> 
                         : getText('tasks_title', 'Tasks for Today')
                     }
                 </h2>
                 
-                {/* Im Simple Mode verstecken wir den Text wenn fertig, damit es übersichtlicher ist */}
                 {(!allDone || !isSimpleMode) && (
-                    <p className={`text-muted-foreground leading-relaxed mb-6 ${isSimpleMode ? 'text-xl text-black' : 'text-sm'}`}>
+                    <p className={`leading-relaxed mb-6 ${isSimpleMode ? 'text-xl text-black font-medium' : 'text-sm text-muted-foreground'}`}>
                         {allDone 
                             ? getText('intro_done', 'Great job! See you tomorrow!') 
                             : getText('intro_pending', 'Please complete these tasks.')
@@ -173,10 +199,10 @@ export default function SitterView({ params }: PageProps) {
                     </p>
                 )}
                 
-                {/* Progress Bar (Gigantisch im Simple Mode) */}
-                <div className={`rounded-full overflow-hidden ${isSimpleMode ? 'h-8 bg-gray-200 border-2 border-black' : 'h-2 bg-secondary'}`}>
+                {/* Progress Bar */}
+                <div className={`rounded-full overflow-hidden ${isSimpleMode ? 'h-6 bg-gray-200 border-2 border-black' : 'h-1.5 bg-secondary'}`}>
                     <div 
-                        className={`h-full transition-all duration-500 ease-out ${allDone ? 'bg-green-500' : 'bg-blue-600'}`}
+                        className={`h-full transition-all duration-700 ease-out ${allDone ? 'bg-green-500' : 'bg-blue-600'}`}
                         style={{ width: `${(doneTasks.length / Math.max(tasks.length, 1)) * 100}%` }}
                     />
                 </div>
@@ -194,88 +220,107 @@ export default function SitterView({ params }: PageProps) {
                         onClick={() => handleToggleTask(task.id)}
                         className={`
                             relative group cursor-pointer transition-all duration-300
-                            rounded-2xl overflow-hidden
+                            overflow-hidden
                             ${isSimpleMode 
-                                ? `border-4 ${isDone ? 'border-green-500 bg-green-50 opacity-50' : 'border-black bg-white shadow-xl'}`
-                                : `border ${isDone ? 'bg-secondary/30 border-transparent opacity-60 scale-[0.98]' : 'bg-card border-border hover:border-blue-300'}`
+                                ? `rounded-xl border-4 ${isDone ? 'border-green-600 bg-green-50 opacity-60' : 'border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none'}`
+                                : `rounded-[1.5rem] border ${isDone ? 'bg-secondary/30 border-transparent opacity-60' : 'bg-card/80 backdrop-blur-sm border-border/50 hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/5'}`
                             }
                         `}
                     >
                         {/* Image Section */}
                         {task.image_path && (
-                             <div className={`w-full bg-secondary relative overflow-hidden ${isSimpleMode ? 'h-64' : 'h-40'}`}>
+                             <div className={`w-full bg-secondary relative overflow-hidden ${isSimpleMode ? 'h-64 border-b-4 border-black' : 'h-48'}`}>
                                 <img 
                                     src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/task-images/${task.image_path}`} 
-                                    className={`w-full h-full object-cover ${isDone ? 'grayscale' : ''}`}
+                                    className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 ${isDone ? 'grayscale' : ''}`}
                                 />
                                 {isDone && (
-                                    <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
-                                        <Check className="w-16 h-16 text-green-700" strokeWidth={4} />
+                                    <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center animate-in fade-in duration-300">
+                                        <div className="bg-green-500 text-white rounded-full p-3 shadow-lg transform scale-125">
+                                            <Check className="w-8 h-8" strokeWidth={4} />
+                                        </div>
                                     </div>
                                 )}
                              </div>
                         )}
 
                         <div className={`flex gap-4 items-start ${isSimpleMode ? 'p-6 block' : 'p-5'}`}>
-                             {/* Icon hidden in Simple Mode if Image exists to save space, otherwise huge */}
-                             {!task.image_path && (
-                                <div className={`shrink-0 flex items-center justify-center transition-colors 
+                            {/* Icon (Hidden if Image exists in Normal Mode for cleaner look) */}
+                            {!task.image_path && (
+                                <div className={`shrink-0 flex items-center justify-center transition-all duration-300
                                     ${isSimpleMode 
-                                        ? `w-16 h-16 rounded-2xl mb-4 ${isDone ? 'bg-green-200' : 'bg-blue-100'}` 
-                                        : `w-12 h-12 rounded-xl ${isDone ? 'bg-green-100 text-green-600' : 'bg-blue-50 text-blue-600 dark:bg-blue-900/20'}`
+                                        ? `w-16 h-16 rounded-xl mb-4 border-2 border-black ${isDone ? 'bg-green-200' : 'bg-yellow-200'}` 
+                                        : `w-12 h-12 rounded-2xl ${isDone ? 'bg-green-100 text-green-600 dark:bg-green-900/20' : 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 shadow-sm'}`
                                     }`}>
-                                    {isDone ? <Check className={isSimpleMode ? "w-10 h-10 text-black" : "w-6 h-6"} /> : <Droplets className={isSimpleMode ? "w-10 h-10 text-black" : "w-6 h-6"} />}
+                                    {isDone 
+                                        ? <Check className={isSimpleMode ? "w-8 h-8 text-black" : "w-6 h-6"} /> 
+                                        : <Droplets className={isSimpleMode ? "w-8 h-8 text-black" : "w-6 h-6"} />
+                                    }
                                 </div>
-                             )}
+                            )}
 
                             <div className="flex-1 min-w-0">
-                                <h3 className={`font-bold leading-tight ${isSimpleMode ? 'text-3xl text-black mb-2' : 'text-lg text-foreground'}`}>
-                                    {task.title}
-                                </h3>
+                                <div className="flex justify-between items-start">
+                                    <h3 className={`font-bold leading-tight ${isSimpleMode ? 'text-3xl text-black mb-3' : 'text-lg text-foreground mb-1'}`}>
+                                        {task.title}
+                                    </h3>
+                                    {!isSimpleMode && !task.image_path && (
+                                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${isDone ? 'bg-green-500 border-green-500' : 'border-border'}`}>
+                                             {isDone && <Check size={12} className="text-white" />}
+                                         </div>
+                                    )}
+                                </div>
                                 
                                 {!isSimpleMode && (
-                                    <span className={`inline-flex items-center gap-1 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full tracking-wide mb-3 bg-secondary`}>
-                                        <Clock size={10} />
-                                        {tForms(`freq_${task.frequency_type}`) || task.frequency_type}
-                                    </span>
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <span className={`inline-flex items-center gap-1 text-[10px] uppercase font-bold px-2 py-0.5 rounded-md tracking-wider bg-secondary/80 text-secondary-foreground`}>
+                                            <Clock size={10} />
+                                            {tForms(`freq_${task.frequency_type}`) || task.frequency_type}
+                                        </span>
+                                    </div>
                                 )}
 
-                                <p className={`text-muted-foreground leading-snug ${isSimpleMode ? 'text-xl text-gray-600 mb-6' : 'text-sm'}`}>
+                                <p className={`leading-relaxed ${isSimpleMode ? 'text-xl text-black font-medium mb-6' : 'text-sm text-muted-foreground'}`}>
                                     {task.description || getText('no_description', 'No description provided.')}
                                 </p>
                                 
                                 {/* SIMPLE MODE BUTTON */}
                                 {isSimpleMode && (
                                     <button className={`
-                                        w-full py-4 rounded-xl text-xl font-black uppercase tracking-wider border-2
+                                        w-full py-4 rounded-xl text-xl font-black uppercase tracking-wider border-2 border-black transition-transform active:scale-95
                                         ${isDone 
-                                            ? 'bg-white border-green-600 text-green-700' 
-                                            : 'bg-green-600 border-green-800 text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-none'
+                                            ? 'bg-gray-100 text-gray-500' 
+                                            : 'bg-black text-white'
                                         }
                                     `}>
                                         {isDone ? t('simple_mode_done') : t('simple_mode_todo')}
                                     </button>
                                 )}
                             </div>
-                            
-                            {/* Checkbox Button (Desktop/NoImage Layout) - Hide in Simple Mode */}
-                            {!task.image_path && !isSimpleMode && (
-                                <div className={`h-6 w-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
-                                    isDone ? 'border-green-500 bg-green-500' : 'border-muted-foreground/30'
-                                }`}>
-                                    {isDone && <Check className="w-3 h-3 text-white" />}
-                                </div>
-                            )}
                         </div>
                         
-                        {/* Normal Button Bar */}
+                        {/* Normal Button Bar (Only if Image exists, looks like a Card Action) */}
                         {!isSimpleMode && task.image_path && (
                             <div className={`px-5 pb-5 pt-0 transition-all ${isDone ? 'opacity-50' : ''}`}>
                                 <Button 
                                     variant={isDone ? "outline" : "default"} 
-                                    className={`w-full h-11 rounded-xl font-bold shadow-sm ${isDone ? 'border-green-500 text-green-600' : 'bg-foreground text-background hover:bg-foreground/90'}`}
+                                    className={`w-full h-11 rounded-xl font-bold shadow-sm transition-all active:scale-[0.98] ${
+                                        isDone 
+                                            ? 'border-green-500 text-green-600 hover:text-green-700 hover:bg-green-50' 
+                                            : 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-500/20'
+                                    }`}
                                 >
-                                    {isDone ? getText('mark_done_button', 'Done') : getText('mark_done_button', 'Mark as Done')}
+                                    {isDone ? (
+                                        <>
+                                            <Check className="w-4 h-4 mr-2" />
+                                            {getText('mark_done_button', 'Done')}
+                                        </>
+                                    ) : (
+                                        <>
+                                            {getText('mark_done_button', 'Mark as Done')}
+                                            <ArrowRight className="w-4 h-4 ml-2 opacity-50" />
+                                        </>
+                                    )}
                                 </Button>
                             </div>
                         )}
@@ -286,29 +331,29 @@ export default function SitterView({ params }: PageProps) {
 
         {/* EMERGENCY CONTACTS */}
         {(owner?.phone || owner?.whatsapp) && (
-          <div className={`mt-12 pt-8 ${isSimpleMode ? 'border-t-4 border-black' : 'border-t border-border'}`}>
-            <h2 className={`font-bold text-destructive mb-4 flex items-center gap-2 ${isSimpleMode ? 'text-3xl' : ''}`}>
-              <AlertTriangle className={isSimpleMode ? "w-8 h-8" : "w-5 h-5"} />
+          <div className={`mt-12 pt-8 ${isSimpleMode ? 'border-t-4 border-black' : 'border-t border-border/50'}`}>
+            <h2 className={`font-bold text-destructive mb-6 flex items-center gap-2 ${isSimpleMode ? 'text-3xl' : 'text-sm uppercase tracking-widest'}`}>
+              <AlertTriangle className={isSimpleMode ? "w-8 h-8" : "w-4 h-4"} />
               {getText('emergency.title', 'Emergency Contact')}
             </h2>
             
             <div className="grid gap-4">
               {owner.phone && (
-                <a href={`tel:${owner.phone}`} className={`flex items-center gap-4 p-4 rounded-xl transition-colors ${
+                <a href={`tel:${owner.phone}`} className={`flex items-center gap-4 p-4 rounded-2xl transition-all active:scale-[0.98] ${
                     isSimpleMode 
-                        ? 'bg-red-100 border-4 border-red-600 hover:bg-red-200' 
-                        : 'bg-card border border-border hover:bg-secondary shadow-sm'
+                        ? 'bg-red-50 border-4 border-red-600 hover:bg-red-100' 
+                        : 'bg-card/50 backdrop-blur-sm border border-red-200/50 hover:bg-red-50/50 dark:hover:bg-red-900/10 shadow-sm'
                 }`}>
-                  <div className={`rounded-full flex items-center justify-center ${
-                      isSimpleMode ? 'bg-red-600 text-white w-16 h-16' : 'bg-green-100 dark:bg-green-900/30 p-3 text-green-700'
+                  <div className={`rounded-full flex items-center justify-center shrink-0 ${
+                      isSimpleMode ? 'bg-red-600 text-white w-16 h-16 border-2 border-black' : 'bg-red-100 dark:bg-red-900/30 p-3 text-red-600 w-12 h-12'
                   }`}>
                     <Phone size={isSimpleMode ? 32 : 20} />
                   </div>
                   <div>
-                    <div className={`font-bold ${isSimpleMode ? 'text-2xl text-black' : 'text-foreground'}`}>
+                    <div className={`font-bold leading-none ${isSimpleMode ? 'text-2xl text-black mb-1' : 'text-foreground mb-1'}`}>
                         {getText('emergency.call_button', 'Call Owner')}
                     </div>
-                    <div className={`${isSimpleMode ? 'text-xl font-mono text-black' : 'text-xs text-muted-foreground'}`}>{owner.phone}</div>
+                    <div className={`${isSimpleMode ? 'text-xl font-mono text-black' : 'text-sm text-muted-foreground font-mono'}`}>{owner.phone}</div>
                   </div>
                 </a>
               )}
