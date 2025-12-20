@@ -11,7 +11,8 @@ import {
     Clock, 
     Glasses,
     ArrowRight,
-    Fish // Importiertes Fish Icon
+    Fish,
+    Printer
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { notFound } from 'next/navigation'
@@ -88,6 +89,71 @@ export default function SitterView({ params }: PageProps) {
     localStorage.setItem(storageKey, JSON.stringify(newDone))
   }
 
+  // PRINT FUNCTION
+  const handlePrint = () => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>TankSitter - ${tank.name}</title>
+          <style>
+            body { font-family: sans-serif; color: #111; padding: 40px; max-width: 800px; margin: 0 auto; }
+            h1 { font-size: 28px; margin: 0 0 10px 0; }
+            .header { border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 30px; }
+            .meta { font-size: 14px; color: #666; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th { text-align: left; border-bottom: 2px solid #ddd; padding: 10px 5px; text-transform: uppercase; font-size: 12px; }
+            td { border-bottom: 1px solid #eee; padding: 12px 5px; vertical-align: middle; }
+            .checkbox { width: 16px; height: 16px; border: 1.5px solid #333; display: inline-block; margin-right: 10px; }
+            .emergency { background: #f9f9f9; padding: 20px; margin-top: 40px; border-radius: 8px; border: 1px solid #eee; }
+            @media print { body { padding: 0; } }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>${tank.name}</h1>
+            <div class="meta">TankSitter Guide</div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 50%">Task</th>
+                <th style="width: 20%">Frequency</th>
+                <th style="width: 30%">Check</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tasks.map(t => `
+                <tr>
+                  <td><strong>${t.title}</strong><br><span style="font-size: 12px; color: #666;">${t.description || ''}</span></td>
+                  <td>${t.frequency_type}</td>
+                  <td><div class="checkbox"></div> Done</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+
+          ${(owner?.phone || owner?.emergency_notes) ? `
+            <div class="emergency">
+              <strong>🚨 Emergency Contact:</strong><br>
+              ${owner.phone ? `Phone: ${owner.phone}<br>` : ''}
+              ${owner.emergency_notes ? `<br>Notes:<br>${owner.emergency_notes}` : ''}
+            </div>
+          ` : ''}
+
+          <script>
+            window.onload = function() { window.print(); }
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
   // Fallback Helper
   const getText = (key: string, fallback?: string) => {
     try {
@@ -128,39 +194,49 @@ export default function SitterView({ params }: PageProps) {
             ? 'bg-white border-black border-b-4 py-4 shadow-sm' 
             : 'bg-background/80 backdrop-blur-xl border-b border-border/50 py-3'
       }`}>
-        <div className="max-w-md mx-auto px-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
+        <div className="max-w-md mx-auto px-4 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0">
                 {!isSimpleMode && (
-                    <div className="bg-gradient-to-br from-blue-500 to-cyan-400 p-2 rounded-xl text-white shadow-lg shadow-blue-500/20">
+                    <div className="bg-gradient-to-br from-blue-500 to-cyan-400 p-2 rounded-xl text-white shadow-lg shadow-blue-500/20 shrink-0">
                         <Fish className="w-5 h-5" strokeWidth={2.5} />
                     </div>
                 )}
                 <div className="overflow-hidden">
-                    <h1 className={`font-extrabold leading-none truncate max-w-[180px] ${isSimpleMode ? 'text-3xl text-black uppercase tracking-tighter' : 'text-lg text-foreground tracking-tight'}`}>
+                    <h1 className={`font-extrabold leading-none truncate ${isSimpleMode ? 'text-3xl text-black uppercase tracking-tighter' : 'text-lg text-foreground tracking-tight'}`}>
                         {tank.name}
                     </h1>
                     {!isSimpleMode && <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mt-0.5">Sitter Guide</p>}
                 </div>
             </div>
             
-            <div className="flex gap-2">
-                {/* SIMPLE MODE TOGGLE */}
+            <div className="flex gap-2 items-center shrink-0">
+                {/* PRINT BUTTON (Only in Normal Mode) */}
+                {!isSimpleMode && (
+                    <Button
+                        variant="secondary"
+                        size="icon"
+                        onClick={handlePrint}
+                        className="bg-secondary/50 hover:bg-secondary border border-border/50 w-10 h-10 rounded-xl"
+                        title="Print Guide"
+                    >
+                        <Printer className="w-5 h-5 text-muted-foreground" />
+                    </Button>
+                )}
+
+                {/* SIMPLE MODE TOGGLE WITH TEXT */}
                 <Button 
-                    variant={isSimpleMode ? "default" : "secondary"} 
-                    size={isSimpleMode ? "lg" : "icon"}
+                    variant={isSimpleMode ? "default" : "outline"} 
                     onClick={() => setIsSimpleMode(!isSimpleMode)}
-                    className={`rounded-xl transition-all ${
+                    className={`rounded-xl transition-all border-2 ${
                         isSimpleMode 
-                            ? "bg-black text-white hover:bg-gray-800 text-lg font-bold px-6 border-2 border-black h-12" 
-                            : "bg-secondary/50 hover:bg-secondary border border-border/50 w-10 h-10"
+                            ? "bg-black text-white hover:bg-gray-800 text-lg font-bold px-4 border-black h-12" 
+                            : "bg-white/50 hover:bg-white text-foreground border-foreground/10 hover:border-foreground/30 h-10 px-3 text-xs sm:text-sm font-semibold"
                     }`}
-                    title="Toggle Simple View"
+                    title={isSimpleMode ? t('toggle_normal_mode') : t('toggle_simple_mode')}
                 >
-                    {isSimpleMode ? (
-                        <span className="flex items-center gap-2"><Glasses className="w-6 h-6" /> {t('toggle_normal_mode')}</span>
-                    ) : (
-                        <Glasses className="w-5 h-5 text-muted-foreground" />
-                    )}
+                    <Glasses className={`mr-2 ${isSimpleMode ? "w-6 h-6" : "w-4 h-4"}`} />
+                    <span className="hidden sm:inline">{isSimpleMode ? t('toggle_normal_mode') : t('toggle_simple_mode')}</span>
+                    <span className="sm:hidden">{isSimpleMode ? "Normal" : "Groß"}</span>
                 </Button>
 
                 {!isSimpleMode && <ModeToggle />}
