@@ -16,12 +16,12 @@ import {
     Fish, 
     Droplets, 
     TestTube, 
-    FlaskConical, // Für Dünger (Chemie Look)
+    FlaskConical, 
     Zap, 
-    Snowflake, // Für Frostfutter
-    Scissors, // Für Pflanzen schneiden
-    Wind, // Für CO2/Gas
-    Filter // Für Filter
+    Snowflake, 
+    Scissors, 
+    Wind, 
+    Filter 
 } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
@@ -41,7 +41,7 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
   const [preview, setPreview] = useState<string | null>(null)
   const [file, setFile] = useState<File | null>(null)
 
-  // State
+  // Formular State
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [frequency, setFrequency] = useState('daily')
@@ -59,6 +59,7 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
   ]
 
   const applyPreset = (preset: typeof presets[0]) => {
+    // 'as any' wird genutzt, da TypeScript dynamische i18n Keys oft nicht mag
     setTitle(tPresets(preset.id as any))
     setDescription(tPresets(`desc_${preset.id}` as any))
     setFrequency(preset.freq)
@@ -99,7 +100,7 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
     if (error) {
       toast.error(error.message)
     } else {
-      toast.success(t('add_task_title') + ' added!') // Fallback success msg
+      toast.success(t('add_task_title') + ' added!') 
       if (onSuccess) onSuccess()
       else {
           router.refresh()
@@ -178,7 +179,6 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
                     </Select>
                 </div>
 
-                {/* Simplified Image Upload Button */}
                 <div className="space-y-2">
                     <Label>{t('image_label')}</Label>
                     <div className="relative">
@@ -191,7 +191,7 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
                 </div>
             </div>
 
-            {/* Image Preview Area (Only if image selected) */}
+            {/* Image Preview */}
             {preview && (
                  <div className="relative w-full h-32 rounded-xl overflow-hidden border border-border">
                     <Image src={preview} alt="Preview" fill className="object-cover" />
@@ -200,7 +200,7 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
                         onClick={() => {setPreview(null); setFile(null)}}
                         className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white p-1 rounded-full backdrop-blur-sm transition-colors"
                     >
-                        <Upload className="w-3 h-3 rotate-45" /> {/* Makes a mock 'X' */}
+                        <Upload className="w-3 h-3 rotate-45" /> 
                     </button>
                  </div>
             )}
