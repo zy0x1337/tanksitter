@@ -33,6 +33,7 @@
   /* Custom Animations */
   --animate-float: float 6s ease-in-out infinite;
   --animate-shimmer: shimmer 2s linear infinite;
+  --animate-bounce-slow: bounce-slow 3s infinite; /* NEU für Loading Screen */
   
   @keyframes float {
     0%, 100% { transform: translateY(0); }
@@ -41,6 +42,10 @@
   @keyframes shimmer {
     from { background-position: 0 0; }
     to { background-position: -200% 0; }
+  }
+  @keyframes bounce-slow {
+    0%, 100% { transform: translateY(-5%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
+    50% { transform: translateY(0); animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
   }
 }
 
