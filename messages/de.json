@@ -80,7 +80,7 @@
     "todo_today_title": "Heute zu tun",
     "empty_title": "Alles erledigt! 🎉",
     "empty_desc": "Für heute stehen keine Aufgaben an.",
-    "intro_done": "Super Arbeit! Die Fische sind glücklich. Bis morgen! 🐟",
+    "intro_done": "Super Arbeit! Die Fische sind glücklich. Bis morgen!",
     "intro_pending": "Bitte erledige diese Aufgaben, damit das Ökosystem stabil bleibt.",
     "progress_text": "{done} / {total} Erledigt",
     "footer_warning": "Wenn du unsicher bist, ruf an.",

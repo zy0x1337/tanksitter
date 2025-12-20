@@ -86,7 +86,7 @@
     "todo_today_title": "To Do Today",
     "empty_title": "All done! 🎉",
     "empty_desc": "No tasks scheduled for today.",
-    "intro_done": "Great job! The fish are happy. See you tomorrow! 🐟",
+    "intro_done": "Great job! The fish are happy. See you tomorrow!",
     "intro_pending": "Please complete these tasks to keep the ecosystem healthy.",
     "progress_text": "{done} / {total} Done",
     "footer_warning": "When in doubt, call me.",

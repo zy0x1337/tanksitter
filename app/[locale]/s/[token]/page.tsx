@@ -10,7 +10,8 @@ import {
     Droplets, 
     Clock, 
     Glasses,
-    ArrowRight
+    ArrowRight,
+    Fish // Importiertes Fish Icon
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { notFound } from 'next/navigation'
@@ -131,7 +132,7 @@ export default function SitterView({ params }: PageProps) {
             <div className="flex items-center gap-3">
                 {!isSimpleMode && (
                     <div className="bg-gradient-to-br from-blue-500 to-cyan-400 p-2 rounded-xl text-white shadow-lg shadow-blue-500/20">
-                        <span className="text-lg font-bold">🐠</span>
+                        <Fish className="w-5 h-5" strokeWidth={2.5} />
                     </div>
                 )}
                 <div className="overflow-hidden">
@@ -266,7 +267,7 @@ export default function SitterView({ params }: PageProps) {
                                     </h3>
                                     {!isSimpleMode && !task.image_path && (
                                          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${isDone ? 'bg-green-500 border-green-500' : 'border-border'}`}>
-                                             {isDone && <Check size={12} className="text-white" />}
+                                              {isDone && <Check size={12} className="text-white" />}
                                          </div>
                                     )}
                                 </div>
