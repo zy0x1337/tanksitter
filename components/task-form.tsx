@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Loader2, Plus, Upload, Fish, Droplets, Thermometer, TestTube, Leaf, Zap } from 'lucide-react'
+import { Loader2, Plus, Upload, Fish, Droplets, TestTube, Leaf, Zap } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
 
@@ -36,7 +36,7 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
   // Preset Definitionen
   const presets = [
     { id: 'feed_fish', icon: Fish, freq: 'daily' },
-    { id: 'feed_shrimp', icon: Fish, freq: 'daily' }, // Icon kann man variieren
+    { id: 'feed_shrimp', icon: Fish, freq: 'daily' },
     { id: 'check_tech', icon: Zap, freq: 'daily' },
     { id: 'fertilizer', icon: Leaf, freq: 'weekly' },
     { id: 'water_change', icon: Droplets, freq: 'weekly' },
@@ -44,6 +44,7 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
   ]
 
   const applyPreset = (preset: typeof presets[0]) => {
+    // Casting zu 'any', da TypeScript die dynamischen Keys nicht im Voraus kennt
     setTitle(tPresets(preset.id as any))
     setDescription(tPresets(`desc_${preset.id}` as any))
     setFrequency(preset.freq)
