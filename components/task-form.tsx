@@ -156,7 +156,7 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">Descr</Label>
                 <Textarea 
                     id="description" 
                     value={description}
