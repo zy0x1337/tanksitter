@@ -9,7 +9,20 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Loader2, Plus, Upload, Fish, Droplets, TestTube, Leaf, Zap } from 'lucide-react'
+import { 
+    Loader2, 
+    Plus, 
+    Upload, 
+    Fish, 
+    Droplets, 
+    TestTube, 
+    FlaskConical, // Für Dünger (Chemie Look)
+    Zap, 
+    Snowflake, // Für Frostfutter
+    Scissors, // Für Pflanzen schneiden
+    Wind, // Für CO2/Gas
+    Filter // Für Filter
+} from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
 
@@ -28,23 +41,24 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
   const [preview, setPreview] = useState<string | null>(null)
   const [file, setFile] = useState<File | null>(null)
 
-  // State für Formularfelder, damit Presets sie füllen können
+  // State
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [frequency, setFrequency] = useState('daily')
 
-  // Preset Definitionen
+  // Expert Presets Definition
   const presets = [
-    { id: 'feed_fish', icon: Fish, freq: 'daily' },
-    { id: 'feed_shrimp', icon: Fish, freq: 'daily' },
-    { id: 'check_tech', icon: Zap, freq: 'daily' },
-    { id: 'fertilizer', icon: Leaf, freq: 'weekly' },
-    { id: 'water_change', icon: Droplets, freq: 'weekly' },
-    { id: 'test_water', icon: TestTube, freq: 'weekly' },
+    { id: 'feed_dry', icon: Fish, freq: 'daily', color: 'text-orange-500' },
+    { id: 'feed_frozen', icon: Snowflake, freq: 'daily', color: 'text-blue-400' },
+    { id: 'fertilizer', icon: FlaskConical, freq: 'daily', color: 'text-green-500' },
+    { id: 'co2_check', icon: Wind, freq: 'daily', color: 'text-emerald-500' },
+    { id: 'water_change', icon: Droplets, freq: 'weekly', color: 'text-blue-600' },
+    { id: 'filter_clean', icon: Filter, freq: 'weekly', color: 'text-slate-600' },
+    { id: 'test_params', icon: TestTube, freq: 'weekly', color: 'text-purple-500' },
+    { id: 'trim_plants', icon: Scissors, freq: 'weekly', color: 'text-lime-600' },
   ]
 
   const applyPreset = (preset: typeof presets[0]) => {
-    // Casting zu 'any', da TypeScript die dynamischen Keys nicht im Voraus kennt
     setTitle(tPresets(preset.id as any))
     setDescription(tPresets(`desc_${preset.id}` as any))
     setFrequency(preset.freq)
@@ -61,7 +75,6 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
     e.preventDefault()
     setLoading(true)
 
-    // Image Upload
     let image_path = null
     if (file) {
       const ext = file.name.split('.').pop()
@@ -86,11 +99,10 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
     if (error) {
       toast.error(error.message)
     } else {
-      toast.success('Task added!')
+      toast.success(t('add_task_title') + ' added!') // Fallback success msg
       if (onSuccess) onSuccess()
       else {
           router.refresh()
-          // Reset
           setTitle('')
           setDescription('')
           setFrequency('daily')
@@ -104,27 +116,30 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
   return (
     <div className="space-y-6">
         
-        {/* PRESETS SECTION */}
+        {/* PRESETS GRID */}
         <div>
-            <Label className="text-xs uppercase text-muted-foreground font-bold mb-3 block tracking-wider">
+            <Label className="text-[10px] uppercase text-muted-foreground font-bold mb-3 block tracking-wider">
                 {tPresets('title')}
             </Label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-4 gap-2">
                 {presets.map((p) => (
                     <button
                         key={p.id}
                         type="button"
                         onClick={() => applyPreset(p)}
-                        className="flex flex-col items-center justify-center p-3 rounded-xl border border-border bg-secondary/20 hover:bg-blue-50 hover:border-blue-200 dark:hover:bg-blue-900/20 dark:hover:border-blue-800 transition-all text-center gap-2 group"
+                        className="flex flex-col items-center justify-center p-2.5 rounded-xl border border-border/50 bg-secondary/10 hover:bg-secondary/40 hover:border-blue-300/50 hover:shadow-sm transition-all text-center gap-1.5 group h-[70px]"
+                        title={tPresets(p.id as any)}
                     >
-                        <p.icon className="w-5 h-5 text-muted-foreground group-hover:text-blue-500 transition-colors" />
-                        <span className="text-[10px] font-medium leading-tight line-clamp-1">{tPresets(p.id as any)}</span>
+                        <p.icon className={`w-5 h-5 ${p.color} opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all`} />
+                        <span className="text-[9px] font-medium leading-tight w-full truncate px-1 text-muted-foreground group-hover:text-foreground">
+                            {tPresets(p.id as any)}
+                        </span>
                     </button>
                 ))}
             </div>
         </div>
 
-        <div className="h-px bg-border w-full" />
+        <div className="h-px bg-border/50 w-full" />
 
         <form onSubmit={onSubmit} className="space-y-4">
             <div className="space-y-2">
@@ -140,50 +155,57 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="description">Description (Optional)</Label>
+                <Label htmlFor="description">Description</Label>
                 <Textarea 
                     id="description" 
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="e.g. Only half a spoon..." 
-                    className="resize-none"
-                    rows={2}
+                    className="resize-none min-h-[80px]"
                 />
             </div>
 
-            <div className="space-y-2 relative z-20">
-                <Label htmlFor="frequency_type">{t('frequency_label')}</Label>
-                <Select value={frequency} onValueChange={setFrequency} required>
-                    <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="daily">{t('freq_daily')}</SelectItem>
-                        <SelectItem value="weekly">{t('freq_weekly')}</SelectItem>
-                        <SelectItem value="once">{t('freq_once')}</SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2 relative z-20">
+                    <Label htmlFor="frequency_type">{t('frequency_label')}</Label>
+                    <Select value={frequency} onValueChange={setFrequency} required>
+                        <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="daily">{t('freq_daily')}</SelectItem>
+                            <SelectItem value="weekly">{t('freq_weekly')}</SelectItem>
+                            <SelectItem value="once">{t('freq_once')}</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
 
-            <div className="space-y-2">
-                <Label>{t('image_label')}</Label>
-                <div className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer relative overflow-hidden h-32 flex items-center justify-center transition-colors ${preview ? 'border-solid border-blue-500 p-0' : 'hover:bg-secondary/50 border-muted-foreground/30'}`}>
-                    <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 z-10 cursor-pointer" />
-                    {preview ? (
-                        <div className="relative w-full h-full group">
-                            <Image src={preview} alt="Preview" fill className="object-cover" />
-                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <span className="text-white text-xs font-bold">Change Image</span>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="text-muted-foreground flex flex-col items-center">
-                            <Upload className="w-5 h-5 mb-1" />
-                            <span className="text-[10px] font-medium uppercase tracking-wide">{t('upload_hint')}</span>
-                        </div>
-                    )}
+                {/* Simplified Image Upload Button */}
+                <div className="space-y-2">
+                    <Label>{t('image_label')}</Label>
+                    <div className="relative">
+                        <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 z-10 cursor-pointer w-full h-10" />
+                        <Button type="button" variant="outline" className="w-full justify-start text-muted-foreground font-normal">
+                             <Upload className="w-4 h-4 mr-2" />
+                             {preview ? 'Image selected' : 'Upload'}
+                        </Button>
+                    </div>
                 </div>
             </div>
 
-            <Button type="submit" className="w-full h-11 text-base shadow-lg shadow-blue-500/10" disabled={loading}>
+            {/* Image Preview Area (Only if image selected) */}
+            {preview && (
+                 <div className="relative w-full h-32 rounded-xl overflow-hidden border border-border">
+                    <Image src={preview} alt="Preview" fill className="object-cover" />
+                    <button 
+                        type="button"
+                        onClick={() => {setPreview(null); setFile(null)}}
+                        className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white p-1 rounded-full backdrop-blur-sm transition-colors"
+                    >
+                        <Upload className="w-3 h-3 rotate-45" /> {/* Makes a mock 'X' */}
+                    </button>
+                 </div>
+            )}
+
+            <Button type="submit" className="w-full h-11 text-base shadow-lg shadow-blue-500/10 mt-2" disabled={loading}>
                 {loading ? <Loader2 className="animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
                 {t('save_button')}
             </Button>
