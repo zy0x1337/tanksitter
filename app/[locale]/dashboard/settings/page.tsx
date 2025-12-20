@@ -45,7 +45,7 @@ export default async function SettingsPage({
           <Link href={`/${locale}/dashboard`}>
             <Button variant="ghost" className="pl-0 hover:bg-transparent hover:text-blue-500 transition-colors group text-muted-foreground">
               <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-              {t('back_to_dashboard') || 'Back to Dashboard'}
+              {t('back_to_dashboard')}
             </Button>
           </Link>
         </div>
@@ -73,15 +73,15 @@ export default async function SettingsPage({
 
               {/* Form Section */}
               <div className="space-y-6">
-                 <div className="flex items-center gap-3 text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
-                    <ShieldAlert className="w-4 h-4 text-amber-500" />
-                    {t('contact_info_title')}
-                 </div>
+                  <div className="flex items-center gap-3 text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4">
+                     <ShieldAlert className="w-4 h-4 text-amber-500" />
+                     {t('contact_info_title')}
+                  </div>
 
-                 {/* Client Form Component */}
-                 <div className="bg-background/40 p-6 rounded-2xl border border-border/40">
-                    <ProfileForm user={user} initialData={profile} />
-                 </div>
+                  {/* Client Form Component */}
+                  <div className="bg-background/40 p-6 rounded-2xl border border-border/40">
+                     <ProfileForm user={user} initialData={profile} />
+                  </div>
               </div>
 
            </div>
