@@ -15,25 +15,25 @@ import {
   Waves, 
   Droplets, 
   Anchor, 
-  Shrimp, // Perfekt für Garnelen/Schnecken/Muscheln
+  Shrimp, 
   Leaf,
-  Sprout, // Perfekt für Planted Tanks
-  Thermometer // Für Technik-Becken / Aufzucht
+  Sprout, 
+  Thermometer 
 } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
-// Verfügbare Icons definieren
+// Verfügbare Icons definieren (Labels jetzt als Translation Keys)
 const TANK_ICONS = [
-  { id: 'fish', icon: Fish, label: 'Fish' },
-  { id: 'shrimp', icon: Shrimp, label: 'Shrimp' }, // Shell als bestes Match für Invertebraten
-  { id: 'planted', icon: Sprout, label: 'Planted' },
-  { id: 'waves', icon: Waves, label: 'Water' },
-  { id: 'nature', icon: Leaf, label: 'Nature' },
-  { id: 'tech', icon: Thermometer, label: 'Tech' },
-  { id: 'chem', icon: Droplets, label: 'Chem' },
-  { id: 'deco', icon: Anchor, label: 'Deco' },
+  { id: 'fish', icon: Fish, labelKey: 'icon_label_fish' },
+  { id: 'shrimp', icon: Shrimp, labelKey: 'icon_label_shrimp' },
+  { id: 'planted', icon: Sprout, labelKey: 'icon_label_planted' },
+  { id: 'waves', icon: Waves, labelKey: 'icon_label_water' },
+  { id: 'nature', icon: Leaf, labelKey: 'icon_label_nature' },
+  { id: 'tech', icon: Thermometer, labelKey: 'icon_label_tech' },
+  { id: 'chem', icon: Droplets, labelKey: 'icon_label_chem' },
+  { id: 'deco', icon: Anchor, labelKey: 'icon_label_deco' },
 ]
 
 export default function NewTankPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -140,7 +140,7 @@ export default function NewTankPage({ params }: { params: Promise<{ locale: stri
                         <div className="space-y-3">
                             <Label className="text-foreground font-semibold ml-1">Icon</Label>
                             <div className="grid grid-cols-4 gap-3">
-                                {TANK_ICONS.map(({ id, icon: Icon, label }) => {
+                                {TANK_ICONS.map(({ id, icon: Icon, labelKey }) => {
                                     const isSelected = selectedIcon === id
                                     return (
                                         <button
@@ -155,7 +155,9 @@ export default function NewTankPage({ params }: { params: Promise<{ locale: stri
                                             )}
                                         >
                                             <Icon className={cn("w-6 h-6", isSelected && "animate-pulse")} strokeWidth={isSelected ? 2.5 : 2} />
-                                            <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>
+                                            <span className="text-[10px] font-bold uppercase tracking-wider">
+                                                {t(labelKey)}
+                                            </span>
                                         </button>
                                     )
                                 })}

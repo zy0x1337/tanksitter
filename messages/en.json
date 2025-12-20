@@ -153,7 +153,15 @@
     "image_label": "Photo (Important!)",
     "upload_hint": "Click or drag image here",
     "delete_tank": "Delete Tank",
-    "delete_confirm": "Delete?"
+    "delete_confirm": "Delete?",
+    "icon_label_fish": "Fish",
+    "icon_label_shrimp": "Shrimp",
+    "icon_label_planted": "Planted",
+    "icon_label_water": "Water",
+    "icon_label_nature": "Nature",
+    "icon_label_tech": "Tech",
+    "icon_label_chem": "Chem",
+    "icon_label_deco": "Deco"
   },
   "Share": {
     "dialog_title": "Share Access",

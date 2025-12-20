@@ -153,7 +153,15 @@
     "image_label": "Foto (Wichtig!)",
     "upload_hint": "Klicken oder Bild hierher ziehen",
     "delete_tank": "Becken löschen",
-    "delete_confirm": "Wirklich löschen?"
+    "delete_confirm": "Wirklich löschen?",
+    "icon_label_fish": "Fisch",
+    "icon_label_shrimp": "Garnele",
+    "icon_label_planted": "Pflanzen",
+    "icon_label_water": "Wasser",
+    "icon_label_nature": "Natur",
+    "icon_label_tech": "Technik",
+    "icon_label_chem": "Chemie",
+    "icon_label_deco": "Deko"
   },
   "Share": {
     "dialog_title": "Zugang teilen",
