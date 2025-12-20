@@ -117,6 +117,11 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
   return (
     <div className="space-y-6">
         
+        {/* DEBUG MARKER */}
+        <div className="bg-red-500 text-white font-bold p-2 text-center rounded animate-pulse">
+            DEBUG: TASK FORM IS LOADED
+        </div>
+
         {/* PRESETS GRID */}
         <div>
             <Label className="text-[10px] uppercase text-muted-foreground font-bold mb-3 block tracking-wider">
