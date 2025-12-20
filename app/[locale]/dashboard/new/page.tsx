@@ -7,9 +7,31 @@ import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { ArrowLeft, Loader2, PlusCircle, Waves, Save } from 'lucide-react'
+import { 
+  ArrowLeft, 
+  Loader2, 
+  PlusCircle, 
+  Save, 
+  Fish, 
+  Waves, 
+  Droplets, 
+  Anchor, 
+  Shell, 
+  Leaf 
+} from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
+
+// Verfügbare Icons definieren
+const TANK_ICONS = [
+  { id: 'fish', icon: Fish },
+  { id: 'waves', icon: Waves },
+  { id: 'droplets', icon: Droplets },
+  { id: 'leaf', icon: Leaf },
+  { id: 'shell', icon: Shell },
+  { id: 'anchor', icon: Anchor },
+]
 
 export default function NewTankPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
@@ -18,6 +40,7 @@ export default function NewTankPage({ params }: { params: Promise<{ locale: stri
   const router = useRouter()
 
   const [loading, setLoading] = useState(false)
+  const [selectedIcon, setSelectedIcon] = useState('fish') // Default Icon
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -35,11 +58,12 @@ export default function NewTankPage({ params }: { params: Promise<{ locale: stri
         return
     }
 
-    // 2. Insert
+    // 2. Insert mit Icon
     const { error } = await supabase
       .from('tanks')
       .insert({
         name,
+        icon: selectedIcon, // <-- Icon speichern
         user_id: user.id,
         share_token: crypto.randomUUID(),
       })
@@ -83,21 +107,19 @@ export default function NewTankPage({ params }: { params: Promise<{ locale: stri
                 
                 {/* Decoration Top */}
                 <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-blue-500 to-cyan-400" />
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-transparent rounded-bl-full pointer-events-none" />
 
                 <div className="p-8 sm:p-10">
-                    <div className="text-center mb-10">
-                        <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-blue-100 dark:border-blue-800 animate-float">
-                             <Waves className="w-8 h-8" />
-                        </div>
+                    <div className="text-center mb-8">
                         <h1 className="text-3xl font-extrabold text-foreground tracking-tight">{t('create_tank_title')}</h1>
                         <p className="text-muted-foreground mt-2 text-sm font-medium">
-                            Give your new ecosystem a name.
+                            Customize your new ecosystem.
                         </p>
                     </div>
 
-                    <form onSubmit={onSubmit} className="space-y-6">
-                        <div className="space-y-2">
+                    <form onSubmit={onSubmit} className="space-y-8">
+                        
+                        {/* 1. Name Input */}
+                        <div className="space-y-3">
                             <Label htmlFor="name" className="text-foreground font-semibold ml-1">
                                 {t('tank_name_label')}
                             </Label>
@@ -111,6 +133,32 @@ export default function NewTankPage({ params }: { params: Promise<{ locale: stri
                             />
                         </div>
 
+                        {/* 2. Icon Selection Grid */}
+                        <div className="space-y-3">
+                            <Label className="text-foreground font-semibold ml-1">Choose an Icon</Label>
+                            <div className="grid grid-cols-6 gap-3">
+                                {TANK_ICONS.map(({ id, icon: Icon }) => {
+                                    const isSelected = selectedIcon === id
+                                    return (
+                                        <button
+                                            key={id}
+                                            type="button"
+                                            onClick={() => setSelectedIcon(id)}
+                                            className={cn(
+                                                "aspect-square rounded-xl flex items-center justify-center transition-all duration-300 border",
+                                                isSelected 
+                                                    ? "bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/30 scale-110" 
+                                                    : "bg-background/50 border-border/60 text-muted-foreground hover:bg-secondary hover:border-blue-500/30 hover:text-blue-500"
+                                            )}
+                                        >
+                                            <Icon className={cn("w-6 h-6", isSelected && "animate-pulse")} strokeWidth={isSelected ? 2.5 : 2} />
+                                        </button>
+                                    )
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Submit Button */}
                         <div className="pt-4">
                             <Button 
                                 type="submit" 
