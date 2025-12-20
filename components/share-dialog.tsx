@@ -2,38 +2,38 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger, 
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
   DialogDescription
 } from '@/components/ui/dialog'
-import { Share2, Copy, Printer, Check, Link as LinkIcon } from 'lucide-react'
-import { QRCodeSVG } from 'qrcode.react' // Empfehlung: Nutze qrcode.react (SVG ist schärfer beim Drucken)
+import { Share2, Copy, Printer, Check, Link as LinkIcon, Loader2 } from 'lucide-react'
+import { QRCodeSVG } from 'qrcode.react'
 import { useLocale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
+import { createClient } from '@/lib/supabase-client'
 
-export function ShareDialog({ 
-  tankName, 
-  shareToken, 
-  triggerButton 
-}: { 
-  tankName: string, 
-  shareToken: string, 
-  triggerButton?: React.ReactNode 
+export function ShareDialog({
+  tankName,
+  shareToken,
+  triggerButton
+}: {
+  tankName: string,
+  shareToken: string,
+  triggerButton?: React.ReactNode
 }) {
   const [copied, setCopied] = useState(false)
+  const [printing, setPrinting] = useState(false) // Loading State für Print
   const [origin, setOrigin] = useState('')
   const locale = useLocale()
-  const t = useTranslations('Share') 
-  const tForms = useTranslations('Forms') 
-  
+  const t = useTranslations('Share')
+  const tForms = useTranslations('Forms') // Für "Daily", "Weekly" Übersetzungen
+  const supabase = createClient()
+
   useEffect(() => {
-    // Client-side origin holen
     setOrigin(window.location.origin)
   }, [])
 
@@ -46,14 +46,76 @@ export function ShareDialog({
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
+    setPrinting(true)
+    const toastId = toast.loading("Preparing Print View...")
+
+    // 1. Echte Daten laden
+    const { data: tankData, error } = await supabase
+        .from('tanks')
+        .select(`*, tasks(*), profiles(full_name, emergency_phone, emergency_notes)`)
+        .eq('share_token', shareToken)
+        .single()
+
+    if (error || !tankData) {
+        toast.error("Failed to load tank data.")
+        setPrinting(false)
+        toast.dismiss(toastId)
+        return
+    }
+
+    // 2. HTML Generierung vorbereiten
+    const date = new Date().toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-US')
+    const qrSvgElement = document.getElementById('qr-code-svg')
+    const qrSvg = qrSvgElement ? qrSvgElement.outerHTML : ''
+
+    // 3. Tasks HTML bauen (oder Empty State)
+    let tasksHtml = ''
+    if (!tankData.tasks || tankData.tasks.length === 0) {
+        tasksHtml = `
+            <div class="note" style="background: #fff; border: 1px dashed #ccc; text-align: center; color: #888;">
+                <em>No tasks defined for this tank yet.</em>
+            </div>
+        `
+    } else {
+        const rows = tankData.tasks.map((task: any) => {
+            // Versuche Frequenz zu übersetzen, sonst Fallback
+            const freqKey = `freq_${task.frequency_type}`
+            // @ts-ignore
+            const freqLabel = ['daily', 'weekly', 'once'].includes(task.frequency_type) ? tForms(freqKey) : task.frequency_type
+
+            return `
+                <tr>
+                    <td>
+                        <strong>${task.title}</strong>
+                        ${task.description ? `<br><span style="font-size: 11px; color: #666;">${task.description}</span>` : ''}
+                    </td>
+                    <td>${freqLabel}</td>
+                    <td style="text-align: center;"><div class="checkbox"></div></td>
+                </tr>
+            `
+        }).join('')
+
+        tasksHtml = `
+            <h2>Checklist</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 55%">${t('pdf_col_task')}</th>
+                        <th style="width: 25%">${t('pdf_col_freq')}</th>
+                        <th style="width: 20%; text-align: center;">${t('pdf_col_done')}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows}
+                </tbody>
+            </table>
+        `
+    }
+
+    // 4. Print Window öffnen
     const printWindow = window.open('', '_blank')
     if (printWindow) {
-      const date = new Date().toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-US')
-      // Wir holen das SVG direkt aus dem DOM, da es dynamisch generiert wurde
-      const qrSvgElement = document.getElementById('qr-code-svg')
-      const qrSvg = qrSvgElement ? qrSvgElement.outerHTML : ''
-
       printWindow.document.write(`
         <!DOCTYPE html>
         <html>
@@ -72,16 +134,19 @@ export function ShareDialog({
               
               table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
               th { text-align: left; border-bottom: 2px solid #ddd; padding: 10px 5px; text-transform: uppercase; font-size: 11px; color: #666; letter-spacing: 0.5px; }
-              td { border-bottom: 1px solid #eee; padding: 12px 5px; vertical-align: middle; }
-              .checkbox { width: 16px; height: 16px; border: 1.5px solid #333; border-radius: 3px; display: inline-block; }
+              td { border-bottom: 1px solid #eee; padding: 12px 5px; vertical-align: top; }
+              .checkbox { width: 16px; height: 16px; border: 1.5px solid #333; border-radius: 3px; display: inline-block; margin-top: 2px; }
               
-              .qr-section { text-align: center; background: #f9fafb; padding: 30px; border-radius: 12px; border: 1px solid #eee; }
+              .qr-section { text-align: center; background: #f9fafb; padding: 30px; border-radius: 12px; border: 1px solid #eee; height: fit-content; }
               .qr-label { font-weight: bold; margin-bottom: 15px; display: block; font-size: 14px; letter-spacing: 1px; }
               .qr svg { max-width: 140px; height: auto; }
+
+              .emergency { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
+              .emergency h3 { font-size: 14px; text-transform: uppercase; margin: 0 0 10px 0; }
+              .emergency p { margin: 5px 0; font-size: 13px; }
               
               @media print {
                 body { padding: 0; }
-                .no-print { display: none; }
                 .qr-section { -webkit-print-color-adjust: exact; }
               }
             </style>
@@ -102,33 +167,14 @@ export function ShareDialog({
                   ${t('pdf_note')}
                 </div>
 
-                <h2>Checklist</h2>
-                <table>
-                  <thead>
-                    <tr>
-                      <th style="width: 55%">${t('pdf_col_task')}</th>
-                      <th style="width: 25%">${t('pdf_col_freq')}</th>
-                      <th style="width: 20%; text-align: center;">${t('pdf_col_done')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><strong>${t('pdf_dummy_feed')}</strong></td>
-                      <td>${tForms('freq_daily')}</td>
-                      <td style="text-align: center;"><div class="checkbox"></div></td>
-                    </tr>
-                     <tr>
-                      <td><strong>${t('pdf_dummy_check')}</strong></td>
-                      <td>${tForms('freq_daily')}</td>
-                      <td style="text-align: center;"><div class="checkbox"></div></td>
-                    </tr>
-                     <tr>
-                      <td>&nbsp;</td>
-                      <td></td>
-                      <td style="text-align: center;"><div class="checkbox"></div></td>
-                    </tr>
-                  </tbody>
-                </table>
+                ${tasksHtml}
+
+                <div class="emergency">
+                    <h3>Emergency Contact</h3>
+                    <p><strong>Owner:</strong> ${tankData.profiles?.full_name || 'Not set'}</p>
+                    <p><strong>Phone:</strong> ${tankData.profiles?.emergency_phone || 'Not set'}</p>
+                    <p><strong>Notes:</strong> ${tankData.profiles?.emergency_notes || '-'}</p>
+                </div>
               </div>
 
               <div class="qr-section">
@@ -148,6 +194,9 @@ export function ShareDialog({
       `)
       printWindow.document.close()
     }
+    
+    setPrinting(false)
+    toast.dismiss(toastId)
   }
 
   return (
@@ -182,7 +231,7 @@ export function ShareDialog({
                       id="qr-code-svg"
                       value={shareUrl}
                       size={256}
-                      level="M" // Medium error correction für bessere Lesbarkeit
+                      level="M" 
                       includeMargin={false}
                       style={{ height: "auto", maxWidth: "100%", width: "100%" }}
                     />
@@ -213,8 +262,8 @@ export function ShareDialog({
                 </div>
              </div>
 
-             <Button variant="secondary" className="w-full gap-2 border border-border/50" onClick={handlePrint}>
-                <Printer className="h-4 w-4" /> 
+             <Button variant="secondary" className="w-full gap-2 border border-border/50" onClick={handlePrint} disabled={printing}>
+                {printing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Printer className="h-4 w-4" />}
                 {t('button_print')}
              </Button>
           </div>
