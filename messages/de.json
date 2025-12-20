@@ -169,7 +169,8 @@
     "pdf_col_freq": "Intervall",
     "pdf_col_done": "Erledigt",
     "pdf_dummy_feed": "Füttern (Siehe App für Fotos)",
-    "pdf_dummy_check": "Technik-Check (Filter/Temp)"
+    "pdf_dummy_check": "Technik-Check (Filter/Temp)",
+    "pdf_no_tasks": "Für dieses Aquarium wurden noch keine Aufgaben erstellt."
   },
   "Legal": {
     "imprint_title": "Impressum",

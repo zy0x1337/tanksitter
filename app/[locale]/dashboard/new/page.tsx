@@ -11,13 +11,14 @@ import {
   ArrowLeft, 
   Loader2, 
   PlusCircle, 
-  Save, 
   Fish, 
   Waves, 
   Droplets, 
   Anchor, 
-  Shell, 
-  Leaf 
+  Shrimp, // Perfekt für Garnelen/Schnecken/Muscheln
+  Leaf,
+  Sprout, // Perfekt für Planted Tanks
+  Thermometer // Für Technik-Becken / Aufzucht
 } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
@@ -25,12 +26,14 @@ import { cn } from '@/lib/utils'
 
 // Verfügbare Icons definieren
 const TANK_ICONS = [
-  { id: 'fish', icon: Fish },
-  { id: 'waves', icon: Waves },
-  { id: 'droplets', icon: Droplets },
-  { id: 'leaf', icon: Leaf },
-  { id: 'shell', icon: Shell },
-  { id: 'anchor', icon: Anchor },
+  { id: 'fish', icon: Fish, label: 'Fish' },
+  { id: 'shrimp', icon: Shrimp, label: 'Shrimp' }, // Shell als bestes Match für Invertebraten
+  { id: 'planted', icon: Sprout, label: 'Planted' },
+  { id: 'waves', icon: Waves, label: 'Water' },
+  { id: 'nature', icon: Leaf, label: 'Nature' },
+  { id: 'tech', icon: Thermometer, label: 'Tech' },
+  { id: 'chem', icon: Droplets, label: 'Chem' },
+  { id: 'deco', icon: Anchor, label: 'Deco' },
 ]
 
 export default function NewTankPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -63,7 +66,7 @@ export default function NewTankPage({ params }: { params: Promise<{ locale: stri
       .from('tanks')
       .insert({
         name,
-        icon: selectedIcon, // <-- Icon speichern
+        icon: selectedIcon, // <-- Das gewählte Icon speichern
         user_id: user.id,
         share_token: crypto.randomUUID(),
       })
@@ -135,9 +138,9 @@ export default function NewTankPage({ params }: { params: Promise<{ locale: stri
 
                         {/* 2. Icon Selection Grid */}
                         <div className="space-y-3">
-                            <Label className="text-foreground font-semibold ml-1">Choose an Icon</Label>
-                            <div className="grid grid-cols-6 gap-3">
-                                {TANK_ICONS.map(({ id, icon: Icon }) => {
+                            <Label className="text-foreground font-semibold ml-1">Icon</Label>
+                            <div className="grid grid-cols-4 gap-3">
+                                {TANK_ICONS.map(({ id, icon: Icon, label }) => {
                                     const isSelected = selectedIcon === id
                                     return (
                                         <button
@@ -145,13 +148,14 @@ export default function NewTankPage({ params }: { params: Promise<{ locale: stri
                                             type="button"
                                             onClick={() => setSelectedIcon(id)}
                                             className={cn(
-                                                "aspect-square rounded-xl flex items-center justify-center transition-all duration-300 border",
+                                                "aspect-square rounded-2xl flex flex-col items-center justify-center transition-all duration-300 border gap-2",
                                                 isSelected 
-                                                    ? "bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/30 scale-110" 
-                                                    : "bg-background/50 border-border/60 text-muted-foreground hover:bg-secondary hover:border-blue-500/30 hover:text-blue-500"
+                                                    ? "bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/30 scale-105" 
+                                                    : "bg-background/40 border-border/60 text-muted-foreground hover:bg-secondary hover:border-blue-500/30 hover:text-blue-500"
                                             )}
                                         >
                                             <Icon className={cn("w-6 h-6", isSelected && "animate-pulse")} strokeWidth={isSelected ? 2.5 : 2} />
+                                            <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>
                                         </button>
                                     )
                                 })}

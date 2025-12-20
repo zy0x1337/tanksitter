@@ -169,7 +169,8 @@
     "pdf_col_freq": "Freq",
     "pdf_col_done": "Done",
     "pdf_dummy_feed": "Feeding (See App for photos)",
-    "pdf_dummy_check": "Tech Check (Filter/Temp)"
+    "pdf_dummy_check": "Tech Check (Filter/Temp)",
+    "pdf_no_tasks": "No tasks have been created for this tank yet."
   },
   "Legal": {
     "imprint_title": "Imprint",
