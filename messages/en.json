@@ -57,23 +57,29 @@
     "no_tanks_desc": "Create your first tank to add tasks and generate your sitter link.",
     "new_tank_button": "New Tank",
     "manage_button": "Manage",
-    "created_at": "Created on {date}"
+    "created_at": "Created on {date}",
+    "settings_title": "Settings",
+    "back_to_dashboard": "Back to Dashboard"
   },
   "Settings": {
     "title": "Profile Settings",
     "contact_info_title": "Emergency Contact Info",
     "contact_info_desc": "This information will be displayed to your sitter in the 'Emergency' section.",
     "save_button": "Save Changes",
+    "saving": "Saving...",
     "saved_success": "Profile updated successfully.",
     "settings_tooltip": "Edit Profile",
     "back_to_dashboard": "Back to Dashboard",
+    "label_full_name": "Full Name",
     "label_phone": "Mobile Number (for calls)",
     "label_whatsapp": "WhatsApp Number (optional)",
     "label_telegram": "Telegram Username (optional)",
-    "label_notes": "Additional Emergency Notes",
+    "label_emergency_notes": "Emergency Notes",
+    "placeholder_full_name": "Your Name",
     "placeholder_phone": "+1 555 0123456",
+    "placeholder_whatsapp": "+1 555 0123456",
     "placeholder_telegram": "@username",
-    "placeholder_notes": "e.g. Neighbor has spare key..."
+    "placeholder_emergency_notes": "Key under the mat, neighbor has spare key..."
   },
   "Sitter": {
     "emergency_button": "Report Emergency / Issue",
@@ -101,6 +107,9 @@
     "tasks_title": "Tasks for Today",
     "no_tasks": "No tasks pending.",
     "mark_done_button": "Mark as Done",
+    "undo_button": "Undo",
+    "upload_photo": "Upload Photo",
+    "photo_required": "Photo Required",
     "photo_label": "Reference Photo",
     "no_description": "No description provided.",
     "toggle_simple_mode": "Large Text",
@@ -194,7 +203,7 @@
       "section2_title": "Contact",
       "section3_title": "Person responsible for content",
       "section3_subtitle": "acc. to § 55 Abs. 2 RStV",
-      "disclaimer_text": "The European Commission provides a platform for online dispute resolution (ODR): https://ec.europa.eu/consumers/odr. We are not willing or obliged to participate in dispute resolution proceedings before a consumer arbitration board."
+      "disclaimer_text": "The European Commission provides a platform for online dispute resolution (ODR): [https://ec.europa.eu/consumers/odr](https://ec.europa.eu/consumers/odr). We are not willing or obliged to participate in dispute resolution proceedings before a consumer arbitration board."
     },
     "privacy": {
       "gen_title": "1. General",
