@@ -280,17 +280,7 @@ export default async function IndexPage({
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               <Link href="/legal/imprint" className="hover:text-foreground transition-colors hover:underline">Imprint</Link>
               <Link href="/legal/privacy" className="hover:text-foreground transition-colors hover:underline">Privacy</Link>
-              <Link href="https://github.com/DeinRepo" target="_blank" className="hover:text-foreground transition-colors hover:underline">GitHub</Link>
-          </div>
-
-          {/* BUY ME A COFFEE - Dezent & Elegant */}
-          <div className="pt-4">
-            <Link href="https://buymeacoffee.com/deinname" target="_blank">
-                <Button variant="outline" className="rounded-full px-6 border-border/60 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-600 hover:border-amber-200 dark:hover:border-amber-800 transition-all group">
-                    <Coffee className="w-4 h-4 mr-2 text-muted-foreground group-hover:text-amber-600 transition-colors" />
-                    <span className="opacity-80 group-hover:opacity-100">Buy me a coffee</span>
-                </Button>
-            </Link>
+              <Link href="https://github.com/zy0x1337/tanksitter" target="_blank" className="hover:text-foreground transition-colors hover:underline">GitHub</Link>
           </div>
 
         </div>
