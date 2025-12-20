@@ -44,6 +44,9 @@
     "success_msg_1": "Wir haben einen Magic Link an",
     "success_msg_2": "gesendet.",
     "success_msg_3": "Klicke darauf, um dich anzumelden.",
+    "success_msg1": "Wir haben einen Magic Link an",
+    "success_msg2": "gesendet.",
+    "success_msg3": "Klicke darauf, um dich anzumelden.",
     "spam_hint": "Nicht angekommen? Bitte prüfe deinen Spam-Ordner.",
     "back_button": "Zurück zum Dashboard"
   },
@@ -100,17 +103,32 @@
     "mark_done_button": "Erledigt",
     "photo_label": "Referenz-Foto",
     "no_description": "Keine weitere Beschreibung.",
-    "emergency": {
-    "title": "Notfall Kontakt",
-    "subtitle": "Falls etwas komisch aussieht oder nicht funktioniert:",
-    "call_button": "Anrufen",
-    "whatsapp_action": "Nachricht schreiben",
-    "notes_label": "Wichtige Hinweise",
     "toggle_simple_mode": "Große Schrift",
     "toggle_normal_mode": "Normale Ansicht",
     "simple_mode_done": "ERLEDIGT!",
-    "simple_mode_todo": "ALS ERLEDIGT MARKIEREN"
+    "simple_mode_todo": "ALS ERLEDIGT MARKIEREN",
+    "emergency": {
+      "title": "Notfall Kontakt",
+      "subtitle": "Falls etwas komisch aussieht oder nicht funktioniert:",
+      "call_button": "Anrufen",
+      "whatsapp_action": "Nachricht schreiben",
+      "notes_label": "Wichtige Hinweise"
     }
+  },
+  "Presets": {
+    "title": "Schnellwahl",
+    "feed_fish": "Fische füttern",
+    "feed_shrimp": "Garnelen füttern",
+    "water_change": "Wasserwechsel",
+    "fertilizer": "Düngen",
+    "check_tech": "Technik-Check",
+    "test_water": "Wassertest",
+    "desc_feed_fish": "Nur eine kleine Prise. Nicht überfüttern!",
+    "desc_feed_shrimp": "1 Stick/Pellet. Reste nach 2h entfernen.",
+    "desc_water_change": "30% Wechsel. Wasseraufbereiter nutzen.",
+    "desc_fertilizer": "Flüssigdünger nach Anleitung zugeben.",
+    "desc_check_tech": "Filter, Heizer und CO2 prüfen.",
+    "desc_test_water": "Teststreifen oder Dropchecker prüfen."
   },
   "Forms": {
     "create_tank_title": "Neues Aquarium",
@@ -172,30 +190,15 @@
       "vercel_text": "Diese Website wird bei Vercel gehostet. Vercel erhebt Logfiles (IP-Adressen) aus Sicherheits- und Performancegründen.",
       "supabase_text": "Wir nutzen Supabase für Authentifizierung und Datenbankdienste. Wenn Sie sich anmelden (Magic Link), wird Ihre E-Mail-Adresse in unserer Datenbank bei Supabase gespeichert.",
       "data_title": "3. Datenerfassung",
-      "data_account": "Account Daten:",
-      "data_account_text": "Wir speichern nur Ihre E-Mail-Adresse zur Kontoerstellung. Wir speichern keine Passwörter.",
+      "data_account": "Account-Daten:",
+      "data_account_text": "Wir speichern nur Ihre E-Mail-Adresse zur Erstellung des Accounts. Wir speichern keine Passwörter.",
       "data_usage": "Nutzungsdaten:",
-      "data_usage_text": "Wir speichern die Namen Ihrer Becken, Aufgaben und hochgeladene Bilder.",
+      "data_usage_text": "Wir speichern die Namen der Becken, Aufgaben und Bilder, die Sie hochladen.",
       "img_title": "4. Bilder",
       "img_note": "Wichtiger Hinweis:",
-      "img_text": "Hochgeladene Bilder werden in einem öffentlichen Speicher (Bucket) abgelegt, damit Ihr Sitter sie ohne Login sehen kann. Bitte laden Sie keine sensiblen persönlichen Daten auf diesen Bildern hoch.",
+      "img_text": "Hochgeladene Bilder werden in einem öffentlichen Speicher abgelegt, damit Ihr Sitter diese ohne Login sehen kann. Bitte laden Sie keine sensiblen persönlichen Daten in diesen Bildern hoch.",
       "rights_title": "5. Ihre Rechte",
-      "rights_text": "Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung sowie ein Recht auf Berichtigung, Sperrung oder Löschung dieser Daten."
+      "rights_text": "Sie haben jederzeit das Recht unentgeltlich Auskunft über Herkunft, Empfänger und Zweck Ihrer gespeicherten personenbezogenen Daten zu erhalten. Sie haben außerdem ein Recht, die Berichtigung, Sperrung oder Löschung dieser Daten zu verlangen."
     }
-  },
-    "Presets": {
-    "title": "Schnellwahl",
-    "feed_fish": "Fische füttern",
-    "feed_shrimp": "Garnelen füttern",
-    "water_change": "Wasserwechsel",
-    "fertilizer": "Düngen",
-    "check_tech": "Technik-Check",
-    "test_water": "Wassertest",
-    "desc_feed_fish": "Nur eine kleine Prise. Nicht überfüttern!",
-    "desc_feed_shrimp": "1 Stick/Pellet. Reste nach 2h entfernen.",
-    "desc_water_change": "30% Wechsel. Wasseraufbereiter nutzen.",
-    "desc_fertilizer": "Flüssigdünger nach Anleitung zugeben.",
-    "desc_check_tech": "Filter, Heizer und CO2 prüfen.",
-    "desc_test_water": "Teststreifen oder Dropchecker prüfen."
   }
 }

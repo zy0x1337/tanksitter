@@ -42,8 +42,11 @@
     "magic_link_hint": "No password. Just click the link in your email.",
     "success_title": "Email sent!",
     "success_msg_1": "We sent a magic link to",
-    "success_msg_2": "",
+    "success_msg_2": "sent.",
     "success_msg_3": "Click it to sign in.",
+    "success_msg1": "We sent a magic link to",
+    "success_msg2": "sent.",
+    "success_msg3": "Click it to sign in.",
     "spam_hint": "Didn't arrive? Please check your spam folder.",
     "back_button": "Back to dashboard"
   },
@@ -100,17 +103,32 @@
     "mark_done_button": "Mark as Done",
     "photo_label": "Reference Photo",
     "no_description": "No description provided.",
-    "emergency": {
-    "title": "Emergency Contact",
-    "subtitle": "If something looks wrong or isn't working:",
-    "call_button": "Call Owner",
-    "whatsapp_action": "Send Message",
-    "notes_label": "Important Notes",
     "toggle_simple_mode": "Large Text",
     "toggle_normal_mode": "Normal View",
     "simple_mode_done": "FINISHED!",
-    "simple_mode_todo": "MARK AS DONE"
+    "simple_mode_todo": "MARK AS DONE",
+    "emergency": {
+      "title": "Emergency Contact",
+      "subtitle": "If something looks wrong or isn't working:",
+      "call_button": "Call Owner",
+      "whatsapp_action": "Send Message",
+      "notes_label": "Important Notes"
     }
+  },
+  "Presets": {
+    "title": "Quick Presets",
+    "feed_fish": "Feed Fish",
+    "feed_shrimp": "Feed Shrimp",
+    "water_change": "Water Change",
+    "fertilizer": "Fertilizer",
+    "check_tech": "Check Equipment",
+    "test_water": "Test Water",
+    "desc_feed_fish": "Small pinch only. Don't overfeed!",
+    "desc_feed_shrimp": "1 stick/pellet. Remove leftovers after 2h.",
+    "desc_water_change": "Change 30% water. Use conditioner.",
+    "desc_fertilizer": "Add liquid fertilizer (see bottle).",
+    "desc_check_tech": "Check Filter, Heater and CO2.",
+    "desc_test_water": "Test Stripes or Drop Checker."
   },
   "Forms": {
     "create_tank_title": "New Tank",
@@ -182,20 +200,5 @@
       "rights_title": "5. Your Rights",
       "rights_text": "You have the right to request information about your stored data, its origin, its recipients, and the purpose of its collection at any time. You also have the right to request that it be corrected, blocked, or deleted."
     }
-  },
-  "Presets": {
-    "title": "Quick Presets",
-    "feed_fish": "Feed Fish",
-    "feed_shrimp": "Feed Shrimp",
-    "water_change": "Water Change",
-    "fertilizer": "Fertilizer",
-    "check_tech": "Check Equipment",
-    "test_water": "Test Water",
-    "desc_feed_fish": "Small pinch only. Don't overfeed!",
-    "desc_feed_shrimp": "1 stick/pellet. Remove leftovers after 2h.",
-    "desc_water_change": "Change 30% water. Use conditioner.",
-    "desc_fertilizer": "Add liquid fertilizer (see bottle).",
-    "desc_check_tech": "Check Filter, Heater and CO2.",
-    "desc_test_water": "Test Stripes or Drop Checker."
   }
 }
