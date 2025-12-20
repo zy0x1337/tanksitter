@@ -16,23 +16,23 @@ import { useLocale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { createClient } from '@/lib/supabase-client'
 
-export function ShareDialog({
-  tankName,
-  shareToken,
-  triggerButton
-}: {
-  tankName: string,
-  shareToken: string,
-  triggerButton?: React.ReactNode
+export function ShareDialog({ 
+  tankName, 
+  shareToken, 
+  triggerButton 
+}: { 
+  tankName: string, 
+  shareToken: string, 
+  triggerButton?: React.ReactNode 
 }) {
   const [copied, setCopied] = useState(false)
-  const [printing, setPrinting] = useState(false) // Loading State für Print
+  const [printing, setPrinting] = useState(false) // Loading State
   const [origin, setOrigin] = useState('')
   const locale = useLocale()
-  const t = useTranslations('Share')
-  const tForms = useTranslations('Forms') // Für "Daily", "Weekly" Übersetzungen
+  const t = useTranslations('Share') 
+  const tForms = useTranslations('Forms') 
   const supabase = createClient()
-
+  
   useEffect(() => {
     setOrigin(window.location.origin)
   }, [])
@@ -50,72 +50,75 @@ export function ShareDialog({
     setPrinting(true)
     const toastId = toast.loading("Preparing Print View...")
 
-    // 1. Echte Daten laden
+    // 1. Echte Daten laden (Versuche ohne Profiles, falls RLS Probleme macht)
+    // Wenn Profiles erwünscht sind und RLS stimmt: .select(`*, tasks(*), profiles(full_name, emergency_phone)`)
     const { data: tankData, error } = await supabase
         .from('tanks')
-        .select(`*, tasks(*), profiles(full_name, emergency_phone, emergency_notes)`)
+        .select(`*, tasks(*)`) 
         .eq('share_token', shareToken)
         .single()
 
     if (error || !tankData) {
-        toast.error("Failed to load tank data.")
+        console.error("Print Error:", error)
+        toast.error("Could not load tank data for printing.")
         setPrinting(false)
         toast.dismiss(toastId)
         return
     }
 
-    // 2. HTML Generierung vorbereiten
-    const date = new Date().toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-US')
-    const qrSvgElement = document.getElementById('qr-code-svg')
-    const qrSvg = qrSvgElement ? qrSvgElement.outerHTML : ''
-
-    // 3. Tasks HTML bauen (oder Empty State)
-    let tasksHtml = ''
-    if (!tankData.tasks || tankData.tasks.length === 0) {
-        tasksHtml = `
-            <div class="note" style="background: #fff; border: 1px dashed #ccc; text-align: center; color: #888;">
-                <em>No tasks defined for this tank yet.</em>
-            </div>
-        `
-    } else {
-        const rows = tankData.tasks.map((task: any) => {
-            // Versuche Frequenz zu übersetzen, sonst Fallback
-            const freqKey = `freq_${task.frequency_type}`
-            // @ts-ignore
-            const freqLabel = ['daily', 'weekly', 'once'].includes(task.frequency_type) ? tForms(freqKey) : task.frequency_type
-
-            return `
-                <tr>
-                    <td>
-                        <strong>${task.title}</strong>
-                        ${task.description ? `<br><span style="font-size: 11px; color: #666;">${task.description}</span>` : ''}
-                    </td>
-                    <td>${freqLabel}</td>
-                    <td style="text-align: center;"><div class="checkbox"></div></td>
-                </tr>
-            `
-        }).join('')
-
-        tasksHtml = `
-            <h2>Checklist</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 55%">${t('pdf_col_task')}</th>
-                        <th style="width: 25%">${t('pdf_col_freq')}</th>
-                        <th style="width: 20%; text-align: center;">${t('pdf_col_done')}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${rows}
-                </tbody>
-            </table>
-        `
-    }
-
-    // 4. Print Window öffnen
     const printWindow = window.open('', '_blank')
     if (printWindow) {
+      const date = new Date().toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-US')
+      const qrSvgElement = document.getElementById('qr-code-svg')
+      const qrSvg = qrSvgElement ? qrSvgElement.outerHTML : ''
+
+      // Dynamische Tabelle bauen
+      let tasksHtml = ''
+      
+      if (!tankData.tasks || tankData.tasks.length === 0) {
+          // EMPTY STATE: Keine Tabelle, nur Notiz
+          tasksHtml = `
+            <div class="note" style="text-align: center; color: #888; border: 2px dashed #eee; background: white;">
+                <em>${t('pdf_no_tasks') || 'No tasks have been created for this tank yet.'}</em>
+            </div>
+          `
+      } else {
+          // TABLE STATE: Echte Tasks rendern
+          const rows = tankData.tasks.map((task: any) => {
+              // Einfacher Fallback für Übersetzungen, falls Key nicht existiert
+              const freqLabel = ['daily', 'weekly', 'once'].includes(task.frequency_type) 
+                  ? tForms(`freq_${task.frequency_type}`) 
+                  : task.frequency_type
+
+              return `
+                <tr>
+                  <td>
+                    <strong>${task.title}</strong>
+                    ${task.description ? `<br><span style="font-size: 11px; color: #666;">${task.description}</span>` : ''}
+                  </td>
+                  <td>${freqLabel}</td>
+                  <td style="text-align: center;"><div class="checkbox"></div></td>
+                </tr>
+              `
+          }).join('')
+
+          tasksHtml = `
+            <h2>Checklist</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 55%">${t('pdf_col_task')}</th>
+                  <th style="width: 25%">${t('pdf_col_freq')}</th>
+                  <th style="width: 20%; text-align: center;">${t('pdf_col_done')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows}
+              </tbody>
+            </table>
+          `
+      }
+
       printWindow.document.write(`
         <!DOCTYPE html>
         <html>
@@ -140,13 +143,10 @@ export function ShareDialog({
               .qr-section { text-align: center; background: #f9fafb; padding: 30px; border-radius: 12px; border: 1px solid #eee; height: fit-content; }
               .qr-label { font-weight: bold; margin-bottom: 15px; display: block; font-size: 14px; letter-spacing: 1px; }
               .qr svg { max-width: 140px; height: auto; }
-
-              .emergency { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
-              .emergency h3 { font-size: 14px; text-transform: uppercase; margin: 0 0 10px 0; }
-              .emergency p { margin: 5px 0; font-size: 13px; }
               
               @media print {
                 body { padding: 0; }
+                .no-print { display: none; }
                 .qr-section { -webkit-print-color-adjust: exact; }
               }
             </style>
@@ -166,15 +166,8 @@ export function ShareDialog({
                   <strong>${t('pdf_important')}</strong><br>
                   ${t('pdf_note')}
                 </div>
-
-                ${tasksHtml}
-
-                <div class="emergency">
-                    <h3>Emergency Contact</h3>
-                    <p><strong>Owner:</strong> ${tankData.profiles?.full_name || 'Not set'}</p>
-                    <p><strong>Phone:</strong> ${tankData.profiles?.emergency_phone || 'Not set'}</p>
-                    <p><strong>Notes:</strong> ${tankData.profiles?.emergency_notes || '-'}</p>
-                </div>
+                
+                ${tasksHtml} 
               </div>
 
               <div class="qr-section">
