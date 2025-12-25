@@ -145,7 +145,7 @@ export default async function Dashboard({
             })}
           </div>
         ) : (
-          // Empty State - Optimized with Fish Icon
+          // Empty State
           <div className="flex flex-col items-center justify-center py-32 px-4 text-center border-2 border-dashed border-border/60 rounded-[3rem] bg-secondary/5 relative overflow-hidden group">
              {/* Background Blob for Empty State */}
              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />

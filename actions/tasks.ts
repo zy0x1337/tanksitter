@@ -13,8 +13,8 @@ export async function createTask(formData: FormData) {
   const tankId = formData.get('tankId') as string
   const title = formData.get('title') as string
   const description = formData.get('description') as string
-  const frequency = formData.get('frequency') as string // 'daily', 'weekly'
-  const imageFile = formData.get('image') as File // Das Bild!
+  const frequency = formData.get('frequency') as string
+  const imageFile = formData.get('image') as File
 
   let imagePath = null
 

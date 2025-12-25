@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft, Trash2, Loader2, Image as ImageIcon, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from "sonner"
-import { CreateTaskDialog } from '@/components/create-task-dialog' // <-- Nutzt jetzt den Dialog mit Presets
+import { CreateTaskDialog } from '@/components/create-task-dialog'
 
 interface PageProps {
   params: Promise<{ 
@@ -104,7 +104,6 @@ export default function TankDetailPage({ params }: PageProps) {
                 </div>
             </div>
             
-            {/* HIER IST DER NEUE BUTTON MIT PRESETS */}
             <CreateTaskDialog tankId={tank.id} onSuccess={onTaskCreated} />
         </div>
 

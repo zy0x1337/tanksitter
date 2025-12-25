@@ -1,7 +1,7 @@
 'use client'
 
 import { useLocale } from 'next-intl'
-import { usePathname, useRouter } from '@/navigation' // WICHTIG: Import aus deiner navigation.ts
+import { usePathname, useRouter } from '@/navigation'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useTransition } from 'react'
 
@@ -15,7 +15,7 @@ export function LanguageSwitcher() {
     startTransition(() => {
       // router.replace tauscht das Locale im aktuellen Pfad aus
       router.replace(pathname, { locale: newLocale })
-      router.refresh() // Optional: Erzwingt Server-Refresh für frische Daten
+      router.refresh()
     })
   }
 

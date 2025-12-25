@@ -1,15 +1,16 @@
 import createNextIntlPlugin from 'next-intl/plugin';
-import withPWAInit from "@ducanh2912/next-pwa";
+import withPWAInit from '@ducanh2912/next-pwa';
 
 const withNextIntl = createNextIntlPlugin();
 
+// PWA-Konfiguration
 const withPWA = withPWAInit({
-  dest: "public",
+  dest: 'public',
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
   swcMinify: true,
-  disable: process.env.NODE_ENV === "development", // Im Dev-Mode deaktivieren
+  disable: process.env.NODE_ENV === 'development',
   workboxOptions: {
     disableDevLogs: true,
   },
@@ -17,14 +18,16 @@ const withPWA = withPWAInit({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Deine anderen Configs (z.B. images domain)
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'mqgunkcpqxigwgbzbpgu.supabase.co', // DEINE Supabase Domain hier anpassen!
+        hostname: 'mqgunkcpqxigwgbzbpgu.supabase.co',
       },
     ],
+  },
+  experimental: {
+    appDir: true,
   },
 };
 

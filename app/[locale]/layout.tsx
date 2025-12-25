@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "@/components/theme-provider"; // Muss existieren (siehe Schritt 2 oben)
+import { ThemeProvider } from "@/components/theme-provider";
 import "../globals.css";
 
 // 1. Schriftart laden
@@ -58,7 +58,6 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    // suppressHydrationWarning ist nötig für next-themes, da der Server nicht weiß, welches Theme der Client hat
     <html lang={locale} suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider

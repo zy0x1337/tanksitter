@@ -35,13 +35,13 @@ export default async function IndexPage({
       {/* GRID PATTERN BACKGROUND */}
       <div className="absolute inset-0 bg-grid-slate-900/[0.04] dark:bg-grid-slate-100/[0.03] -z-20 mask-image-gradient" />
       
-      {/* AMBIENT GLOWS - Adjusted for Premium Feel */}
+      {/* AMBIENT GLOWS */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
          <div className="absolute -top-[10%] right-[0%] w-[800px] h-[800px] bg-blue-500/10 dark:bg-cyan-500/10 rounded-full blur-[120px] animate-pulse-slow" />
          <div className="absolute top-[30%] -left-[10%] w-[600px] h-[600px] bg-purple-500/5 dark:bg-blue-600/10 rounded-full blur-[120px]" />
       </div>
 
-      {/* NAVBAR - Glassmorphism */}
+      {/* NAVBAR */}
       <nav className="fixed w-full z-40 top-0 border-b border-white/5 bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer select-none">
@@ -226,7 +226,7 @@ export default async function IndexPage({
             </div>
         </div>
 
-        {/* FEATURES GRID - Premium Cards */}
+        {/* FEATURES GRID - Cards */}
         <div className="max-w-7xl mx-auto mt-32 lg:mt-40">
             <div className="text-center mb-16 space-y-4">
                  <h2 className="text-3xl md:text-5xl font-extrabold text-foreground tracking-tight">{t('trust_badges.features_headline') || 'Why TankSitter?'}</h2>

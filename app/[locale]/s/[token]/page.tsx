@@ -322,7 +322,7 @@ export default function SitterView({ params }: PageProps) {
                         )}
 
                         <div className={`flex gap-4 items-start ${isSimpleMode ? 'p-6 block' : 'p-5'}`}>
-                            {/* Icon (Hidden if Image exists in Normal Mode for cleaner look) */}
+                            {/* Icon */}
                             {!task.image_path && (
                                 <div className={`shrink-0 flex items-center justify-center transition-all duration-300
                                     ${isSimpleMode 
@@ -376,7 +376,7 @@ export default function SitterView({ params }: PageProps) {
                             </div>
                         </div>
                         
-                        {/* Normal Button Bar (Only if Image exists, looks like a Card Action) */}
+                        {/* Normal Button Bar */}
                         {!isSimpleMode && task.image_path && (
                             <div className={`px-5 pb-5 pt-0 transition-all ${isDone ? 'opacity-50' : ''}`}>
                                 <Button 

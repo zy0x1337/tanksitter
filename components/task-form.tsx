@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useDropzone } from 'react-dropzone' // <-- Wichtig
+import { useDropzone } from 'react-dropzone'
 import { 
     Loader2, 
     Plus, 
@@ -96,7 +96,6 @@ export function TaskForm({ tankId, onSuccess }: TaskFormProps) {
     if (imageFile) {
       const ext = imageFile.name.split('.').pop()
       const fileName = `${Math.random().toString(36).substring(2)}.${ext}`
-      // Hier nutzen wir den gleichen Pfad wie im vorherigen Code (tankId prefix ist optional aber gut für Ordnung)
       const filePath = `${tankId}/${fileName}`
       
       const { error: uploadError } = await supabase.storage.from('task-images').upload(filePath, imageFile)

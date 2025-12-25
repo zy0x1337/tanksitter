@@ -2,7 +2,6 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function updateSession(request: NextRequest, response: NextResponse) {
-  // Wir starten mit der Response von next-intl
   let supabaseResponse = response
 
   const supabase = createServerClient(
@@ -19,7 +18,7 @@ export async function updateSession(request: NextRequest, response: NextResponse
             request.cookies.set(name, value)
           )
           
-          // Cookies auf die Response anwenden (wichtig für Persistenz)
+          // Cookies auf die Response anwenden
           cookiesToSet.forEach(({ name, value, options }) => 
             supabaseResponse.cookies.set(name, value, options)
           )
@@ -46,7 +45,6 @@ export async function updateSession(request: NextRequest, response: NextResponse
   }
 
   // 2. Auth Routen (Login) -> Dashboard, wenn User eingeloggt
-  // Wichtig: Wir prüfen exakt auf '/login', um nicht andere Seiten zu blockieren
   if (pathname.includes('/login') && user) {
     const locale = pathname.split('/')[1] || 'en'
     const url = request.nextUrl.clone()

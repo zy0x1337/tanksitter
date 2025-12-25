@@ -28,7 +28,6 @@ export function TaskCard({ task }: { task: any }) {
     localStorage.setItem(doneKey, 'true')
     setIsDone(true)
     
-    // Konfetti-Explosion
     confetti({
       particleCount: 120,
       spread: 80,

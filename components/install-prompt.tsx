@@ -28,7 +28,6 @@ export function InstallPrompt() {
 
     window.addEventListener('beforeinstallprompt', handler)
 
-    // Auf iOS zeigen wir es standardmäßig an (wenn nicht standalone)
     if (isIosDevice && !isStandalone) {
       // Kleiner Delay, damit es nicht sofort nervt
       setTimeout(() => setShow(true), 3000)

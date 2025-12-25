@@ -50,8 +50,7 @@ export function ShareDialog({
     setPrinting(true)
     const toastId = toast.loading("Preparing Print View...")
 
-    // 1. Echte Daten laden (Versuche ohne Profiles, falls RLS Probleme macht)
-    // Wenn Profiles erwünscht sind und RLS stimmt: .select(`*, tasks(*), profiles(full_name, emergency_phone)`)
+    // 1. Echte Daten laden
     const { data: tankData, error } = await supabase
         .from('tanks')
         .select(`*, tasks(*)`) 
@@ -76,14 +75,14 @@ export function ShareDialog({
       let tasksHtml = ''
       
       if (!tankData.tasks || tankData.tasks.length === 0) {
-          // EMPTY STATE: Keine Tabelle, nur Notiz
+          // EMPTY STATE
           tasksHtml = `
             <div class="note" style="text-align: center; color: #888; border: 2px dashed #eee; background: white;">
                 <em>${t('pdf_no_tasks') || 'No tasks have been created for this tank yet.'}</em>
             </div>
           `
       } else {
-          // TABLE STATE: Echte Tasks rendern
+          // TABLE STATE
           const rows = tankData.tasks.map((task: any) => {
               // Einfacher Fallback für Übersetzungen, falls Key nicht existiert
               const freqLabel = ['daily', 'weekly', 'once'].includes(task.frequency_type) 

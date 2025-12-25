@@ -24,7 +24,7 @@ import Link from 'next/link'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
-// Verfügbare Icons definieren (Labels jetzt als Translation Keys)
+// Verfügbare Icons definieren
 const TANK_ICONS = [
   { id: 'fish', icon: Fish, labelKey: 'icon_label_fish' },
   { id: 'shrimp', icon: Shrimp, labelKey: 'icon_label_shrimp' },
@@ -43,7 +43,7 @@ export default function NewTankPage({ params }: { params: Promise<{ locale: stri
   const router = useRouter()
 
   const [loading, setLoading] = useState(false)
-  const [selectedIcon, setSelectedIcon] = useState('fish') // Default Icon
+  const [selectedIcon, setSelectedIcon] = useState('fish')
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -66,7 +66,7 @@ export default function NewTankPage({ params }: { params: Promise<{ locale: stri
       .from('tanks')
       .insert({
         name,
-        icon: selectedIcon, // <-- Das gewählte Icon speichern
+        icon: selectedIcon,
         user_id: user.id,
         share_token: crypto.randomUUID(),
       })

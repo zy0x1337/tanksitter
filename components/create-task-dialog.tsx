@@ -10,7 +10,7 @@ import { TaskForm } from './task-form'
 // Interface erweitern
 interface CreateTaskDialogProps {
   tankId: string
-  onSuccess?: () => void  // <-- Das hier hat gefehlt
+  onSuccess?: () => void
 }
 
 export function CreateTaskDialog({ tankId, onSuccess }: CreateTaskDialogProps) {

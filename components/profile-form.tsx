@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Phone, MessageCircle, Send, Loader2, Save } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl' // WICHTIG: Hook für Übersetzungen
+import { useTranslations } from 'next-intl'
 
 export function ProfileForm({ user, initialData }: { user: any, initialData: any }) {
   const supabase = createClient()
