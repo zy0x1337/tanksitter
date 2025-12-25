@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+TankSitter is a tiny PWA for aquarium nerds who care way too much about their fish not dying while they're on vacation.
 
-## Getting Started
+What it does
+Create tanks and add tasks (daily / weekly / once).
 
-First, run the development server:
+Generate a public sitter link with a super simple UI (incl. "granny mode" with big text).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
+Add photos to tasks so your sitter knows exactly what "a tiny pinch" means.
+
+Let the sitter tick off tasks on their phone or on a printed checklist.
+
+Works in German & English, runs great on mobile, and can be installed as a PWA.
+​
+
+Tech
+Next.js (App Router, TypeScript)
+​
+
+Supabase (Postgres, Auth, Storage)
+​
+
+Tailwind + shadcn/ui for the UI.
+​
+
+next-intl for i18n, next-pwa for PWA bits.
+​
+
+Run it locally
+bash
+git clone https://github.com/YOUR-USER/tanksitter.git
+cd tanksitter
+
+pnpm install        # or npm / yarn
+
+# .env.local
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+
 pnpm dev
-# or
-bun dev
-```
+Open http://localhost:3000 and start over‑engineering your tank care routine.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Status
+Public beta.
+Bugs, ideas, PRs – all welcome.
