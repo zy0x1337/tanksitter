@@ -6,14 +6,12 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import "../globals.css";
 
-// 1. Schriftart laden
 const inter = Inter({ subsets: ['latin'] });
 
-// 2. Viewport Konfiguration
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0c0a09" }, // Stone 950 für Darkmode
+    { media: "(prefers-color-scheme: dark)", color: "#0c0a09" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -21,13 +19,13 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-// 3. Metadaten inkl. PWA Einstellungen
 export const metadata: Metadata = {
   title: {
     template: '%s | TankSitter',
     default: 'TankSitter',
   },
-  description: 'Erstelle kostenlose, visuelle Pflegepläne für deinen Aquariums-Sitter. Verhindere Überfütterung und Unfälle. Kein Login für den Sitter nötig.',
+  description:
+    'Erstelle kostenlose, visuelle Pflegepläne für deinen Aquariums-Sitter. Verhindere Überfütterung und Unfälle. Kein Login für den Sitter nötig.',
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -37,10 +35,19 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+  },
   openGraph: {
     title: 'TankSitter',
     description: 'Keine toten Fische nach dem Urlaub. Erstelle einen visuellen Guide in Sekunden.',
-    url: 'https://tanksitter.vercel.app', 
+    url: 'https://tanksitter.vercel.app',
     siteName: 'TankSitter',
     type: 'website',
     locale: 'de_DE',
@@ -61,18 +68,15 @@ export default async function LocaleLayout({
     <html lang={locale} suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
         >
-            <NextIntlClientProvider messages={messages}>
-              
-              {children}
-              
-              <Toaster position="top-center" richColors />
-
-            </NextIntlClientProvider>
+          <NextIntlClientProvider messages={messages}>
+            {children}
+            <Toaster position="top-center" richColors />
+          </NextIntlClientProvider>
         </ThemeProvider>
       </body>
     </html>
