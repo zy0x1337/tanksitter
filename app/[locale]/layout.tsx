@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     default: 'TankSitter',
   },
   description:
-    'Erstelle kostenlose, visuelle Pflegepläne für deinen Aquariums-Sitter. Verhindere Überfütterung und Unfälle. Kein Login für den Sitter nötig.',
+    'Create visual care guides for your aquarium sitter.',
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
